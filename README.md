@@ -1,4 +1,11 @@
-Here at GitHub, we're no strangers to hosting or sponsoring hackathons. With the growing number of games and game development resources on GitHub, we thought it was about time to throw our very own game jam!
+## Roadmap
+
+* Starwars-based roguelike
+* Built using rot.js
+* Gameplay revolves around using force and lightsaber
+* Force **push**, Force **pull**, Force **fork** (lightning)
+* Enemies: **clone** army, jedi/siths
+* Environment: labyrinth with many **branches**
 
 ## The Challenge
 
