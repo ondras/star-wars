@@ -1,6 +1,7 @@
 Game.Display = function(options) {
 	var options = {
 		fontSize: 100,
+		fontFamily: "droid sans mono, monospace",
 		width: 1,
 		height: 1
 	}
@@ -9,8 +10,8 @@ Game.Display = function(options) {
 
 	this._offset = [0, 0]; /* cell in left-top of canvas */
 
-	this._options.width = ROT.DEFAULT_WIDTH;
-	this._options.height = ROT.DEFAULT_HEIGHT;
+	this._options.width = 60;
+	this._options.height = 25;
 	this._resize();
 
 	window.addEventListener("resize", this);
@@ -19,7 +20,7 @@ Game.Display.extend(ROT.Display);
 
 Game.Display.prototype.update = function(x, y) {
 	/* FIXME visibility? asi ne */
-	this._drawCell(x, y);
+	this._drawCell(x, y, false);
 }
 
 Game.Display.prototype.setCenter = function() {
@@ -28,9 +29,10 @@ Game.Display.prototype.setCenter = function() {
 	this._offset[1] = pos[1]-Math.floor(this._options.height/2);
 
 	this.clear();
+
 	for (var i=0;i<this._options.width;i++) {
 		for (var j=0;j<this._options.height;j++) {
-			this._drawCell(i+this._offset[0], j+this._offset[1]);
+			this._drawCell(i+this._offset[0], j+this._offset[1], true);
 		}
 	}
 
@@ -58,35 +60,26 @@ Game.Display.prototype._resize = function() {
 /**
  * @param {int} x
  * @param {int} y
+ * @param {bool} doNotClear
  */
-Game.Display.prototype._drawCell = function(x, y) {
+Game.Display.prototype._drawCell = function(x, y, doNotClear) {
 	var key = x+","+y;
 
 	var being = Game.beings[key];
 	if (being) {
-		this.draw(x-this._offset[0], y-this._offset[1], being.getChar(), being.getColor());
+		this.draw(x-this._offset[0], y-this._offset[1], being.getChar(), being.getColor(), doNotClear ? "transparent" : "");
 	} else {
-		this._drawTerrain(x, y);
+		this._drawTerrain(x, y, doNotClear);
 	}
 }
 
-Game.Display.prototype._drawTerrain = function(x, y) {
+Game.Display.prototype._drawTerrain = function(x, y, doNotClear) {
 	var terrain = Game.terrain.get(x, y);
 	switch (terrain.type) {
 		case Game.Terrain.TYPE_MOUNTAIN:
 			ch = "^";
 			var colors = ["#d99", "#ff3", "#ccc", "#fff"];
 			color = colors[Math.floor(terrain.amount * colors.length)];
-		break;
-
-		case Game.Terrain.TYPE_WATER:
-			ch = "=";
-			color = "#00f"
-		break;
-
-		case Game.Terrain.TYPE_BRIDGE:
-			ch = "=";
-			color = "goldenrod";
 		break;
 
 		case Game.Terrain.TYPE_FOREST:
@@ -100,12 +93,7 @@ Game.Display.prototype._drawTerrain = function(x, y) {
 			var colors = ["#666", "#960"];
 			color = colors[Math.floor(terrain.amount * colors.length)];
 		break;
-
-		case Game.Terrain.TYPE_CITY:
-			ch = "+";
-			color = "#fff";
-		break;
 	}
 
-	this.draw(x-this._offset[0], y-this._offset[1], ch, color);
+	this.draw(x-this._offset[0], y-this._offset[1], ch, color, doNotClear ? "transparent" : "");
 }
