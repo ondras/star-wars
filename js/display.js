@@ -2,6 +2,7 @@ Game.Display = function(options) {
 	var options = {
 		fontSize: 100,
 		fontFamily: "droid sans mono, monospace",
+		spacing: 1.1,
 		width: 1,
 		height: 1
 	}
@@ -9,9 +10,11 @@ Game.Display = function(options) {
 	this._ratio = this._charWidth / options.fontSize; /* measure ratio */
 
 	this._offset = [0, 0]; /* cell in left-top of canvas */
+	this._canvas.style.position = "relative";
 
 	this._options.width = 60;
 	this._options.height = 25;
+	this._effects = {};
 	this._resize();
 
 	window.addEventListener("resize", this);
@@ -21,6 +24,16 @@ Game.Display.extend(ROT.Display);
 Game.Display.prototype.update = function(x, y) {
 	/* FIXME visibility? asi ne */
 	this._drawCell(x, y, false);
+}
+
+Game.Display.prototype.setEffect = function(x, y, ch, color) {
+	this._effects[x+","+y] = [ch, color];
+	this.update(x, y);
+}
+
+Game.Display.prototype.removeEffect = function(x, y) {
+	delete this._effects[x+","+y];
+	this.update(x, y);
 }
 
 Game.Display.prototype.setCenter = function() {
@@ -46,15 +59,19 @@ Game.Display.prototype._resize = function() {
 	var w = window.innerWidth;
 	var h = window.innerHeight;
 
-	var idealWidth = w / this._options.width;
-	var idealHeight = h / this._options.height;
-
-	var widthFraction = this._ratio * idealHeight / idealWidth;
+	var boxWidth = Math.floor(w / this._options.width);
+	var boxHeight = Math.floor(h / this._options.height);
+	
+	var widthFraction = this._ratio * boxHeight / boxWidth;
 	if (widthFraction > 1) { /* too wide with current aspect ratio */
-		idealHeight /= widthFraction;
+		boxHeight = Math.floor(boxHeight / widthFraction);
 	}
+	
+	var fontSize = Math.floor(boxHeight / this._options.spacing);
 
-	this.setOptions({fontSize:Math.floor(idealHeight)});
+
+	this.setOptions({fontSize:fontSize});
+	this._canvas.style.top = Math.round((h-this._canvas.height)/2) + "px";
 }
 
 /**
@@ -64,13 +81,20 @@ Game.Display.prototype._resize = function() {
  */
 Game.Display.prototype._drawCell = function(x, y, doNotClear) {
 	var key = x+","+y;
+	
+	var effect = this._effects[key];
+	if (effect) {
+		this.draw(x-this._offset[0], y-this._offset[1], effect[0], effect[1], doNotClear ? "transparent" : "");
+		return;
+	}
 
 	var being = Game.beings[key];
 	if (being) {
 		this.draw(x-this._offset[0], y-this._offset[1], being.getChar(), being.getColor(), doNotClear ? "transparent" : "");
-	} else {
-		this._drawTerrain(x, y, doNotClear);
+		return;
 	}
+	
+	this._drawTerrain(x, y, doNotClear);
 }
 
 Game.Display.prototype._drawTerrain = function(x, y, doNotClear) {

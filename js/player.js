@@ -4,18 +4,23 @@ Game.Player = function() {
 	this._alive = true;
 	this._name = "you";
 
-	this._keys = {};
+	this._movementKeys = {};
 
-	this._keys[104]	= 0;
-	this._keys[105]	= 1;
-	this._keys[102]	= 2;
-	this._keys[99]	= 3;
-	this._keys[98]	= 4;
-	this._keys[97]	= 5;
-	this._keys[100]	= 6;
-	this._keys[103]	= 7;
+	this._movementKeys[104]	= 0;
+	this._movementKeys[105]	= 1;
+	this._movementKeys[102]	= 2;
+	this._movementKeys[99]	= 3;
+	this._movementKeys[98]	= 4;
+	this._movementKeys[97]	= 5;
+	this._movementKeys[100]	= 6;
+	this._movementKeys[103]	= 7;
+	
+	this._movementKeys[37] = 6;
+	this._movementKeys[38] = 0;
+	this._movementKeys[39] = 2;
+	this._movementKeys[40] = 4;
 
-	this._keys[101]	= -1; /* noop */
+	this._movementKeys[101]	= -1; /* noop */
 }
 Game.Player.extend(Game.Being);
 
@@ -32,22 +37,26 @@ Game.Player.prototype.act = function() {
 Game.Player.prototype.handleEvent = function(e) {
 	var code = e.keyCode;
 
-	if (!(code in this._keys)) { return; } /* not a direction/noop */
-	if (e.ctrlKey) { return; }
-	
-	e.preventDefault();
-	code = this._keys[code];
-
-	var dir = (code == -1 ? [0,0] : ROT.DIRS[8][code]);
-	var x = this._position[0] + dir[0];
-	var y = this._position[1] + dir[1];
-
-	if (code == -1) { /* noop */
-		window.removeEventListener("keydown", this);
-		Game.engine.unlock();
-		return;
+	if (code in this._movementKeys) { 
+		this._tryMovement(this._movementKeys[code]);
+		return; 
 	}
-	this._tryMove(x, y);
+	
+	var used = true;
+	switch (String.fromCharCode(code)) {
+		case "S":
+			this._lightsaber();
+		break;
+		
+		default:
+			used = false;
+		break;
+	}
+	
+	if (used) { 
+		window.removeEventListener("keydown", this); 
+		Game.engine.unlock();
+	}
 }
 
 Game.Player.prototype.getChar = function() {
@@ -63,7 +72,17 @@ Game.Player.prototype.die = function() {
 	this._alive = false;
 }
 
-Game.Player.prototype._tryMove = function(x, y) {
+Game.Player.prototype._tryMovement = function(direction) {
+	if (direction == -1) { /* noop */
+		window.removeEventListener("keydown", this);
+		Game.engine.unlock();
+		return;
+	}
+
+	var dir = ROT.DIRS[8][direction];
+	var x = this._position[0] + dir[0];
+	var y = this._position[1] + dir[1];
+
 	if (x+","+y in Game.beings) { /* occupied */
 		Game.log("That place is already occupied!");
 		return;
@@ -73,4 +92,8 @@ Game.Player.prototype._tryMove = function(x, y) {
 	Game.setBeing(x, y, this);
 	window.removeEventListener("keydown", this);
 	Game.engine.unlock();
+}
+
+Game.Player.prototype._lightsaber = function() {
+	new Game.Lightsaber(this);
 }
