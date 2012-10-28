@@ -13,8 +13,8 @@ var Game = {
 
 		this.setBeing(0, 0, this.player);
 		
-		var clone = new Game.Clone();
-		this.setBeing(1, 0, clone);
+		this.setBeing(1, 0, new Game.Clone());
+		this.setBeing(-3, 0, new Game.Robot());
 
 		this.engine.start();
 	},

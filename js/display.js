@@ -26,15 +26,34 @@ Game.Display.extend(ROT.Display);
 
 Game.Display.prototype.update = function(x, y) {
 	/* FIXME visibility? asi ne */
-	this._drawCell(x, y, false);
+	var key = x+","+y;
+	var ox = x-this._offset[0];
+	var oy = y-this._offset[1];
+	
+	var effect = this._effects[key];
+	if (effect) {
+		this.draw(ox, oy, effect[0], effect[1]);
+		return;
+	}
+
+	var being = Game.beings[key];
+	if (being) {
+		this.draw(ox, oy, being.getChar(), being.getColor());
+		return;
+	}
+	
+	var decal = this._decals[key];
+	if (decal) {
+		this.draw(ox, oy, decal[0], decal[1]);
+		return;
+	}
+
+	this._drawTerrain(x, y);
 }
 
 Game.Display.prototype.setEffect = function(x, y, ch, color) {
 	this._effects[x+","+y] = [ch, color];
-	var f = this._context.font;
-	this._context.font = "bold " + f;
 	this.update(x, y);
-	this._context.font = f;
 }
 
 Game.Display.prototype.removeEffect = function(x, y) {
@@ -56,7 +75,7 @@ Game.Display.prototype.setCenter = function() {
 
 	for (var i=0;i<this._options.width;i++) {
 		for (var j=0;j<this._options.height;j++) {
-			this._drawCell(i+this._offset[0], j+this._offset[1], true);
+			this.update(i+this._offset[0], j+this._offset[1]);
 		}
 	}
 
@@ -80,63 +99,40 @@ Game.Display.prototype._resize = function() {
 	
 	var fontSize = Math.floor(boxHeight / this._options.spacing);
 
-
 	this.setOptions({fontSize:fontSize});
 	this._canvas.style.top = Math.round((h-this._canvas.height)/2) + "px";
 }
 
-/**
- * @param {int} x
- * @param {int} y
- * @param {bool} doNotClear
- */
-Game.Display.prototype._drawCell = function(x, y, doNotClear) {
-	var key = x+","+y;
-	var ox = x-this._offset[0];
-	var oy = y-this._offset[1];
-	
-	var effect = this._effects[key];
-	if (effect) {
-		this.draw(ox, oy, effect[0], effect[1], doNotClear ? "transparent" : "");
-		return;
+Game.Display.prototype._tick = function() {
+	var now = Date.now();
+	for (var key in this._decals) {
+		var decal = this._decals[key];
+		if (now > decal[2]) {
+			delete this._decals[key];
+			var parts = key.split(",");
+			this.update(parseInt(parts[0]), parseInt(parts[1]));
+		}
 	}
 
-	var being = Game.beings[key];
-	if (being) {
-		this.draw(ox, oy, being.getChar(), being.getColor(), doNotClear ? "transparent" : "");
-		return;
-	}
-	
-	var decal = this._decals[key];
-	if (decal) {
-		this.draw(ox, oy, decal[0], decal[1], doNotClear ? "transparent" : "");
-		return;
-	}
-
-	this._drawTerrain(x, y, doNotClear);
+	ROT.Display.prototype._tick.call(this);
 }
 
-Game.Display.prototype._drawTerrain = function(x, y, doNotClear) {
+Game.Display.prototype._drawTerrain = function(x, y) {
+	var ox = x - this._offset[0];
+	var oy = y - this._offset[1];
 	var terrain = Game.terrain.get(x, y);
-	switch (terrain.type) {
-		case Game.Terrain.TYPE_MOUNTAIN:
-			ch = "^";
-			var colors = ["#d99", "#ff3", "#ccc", "#fff"];
-			color = colors[Math.floor(terrain.amount * colors.length)];
+	switch (terrain) {
+		case Game.Terrain.TYPE_WALL:
+			this.draw(ox, oy, "#", "#ccc");
 		break;
 
-		case Game.Terrain.TYPE_FOREST:
-			var chars = ["t", "T"];
-			ch = chars[Math.floor(terrain.amount * chars.length)];
-			color = "#090";
+		case Game.Terrain.TYPE_TREE:
+			this.draw(ox, oy, "T", "#090");
 		break;
 
 		case Game.Terrain.TYPE_LAND:
-			ch = "·";
-			var colors = ["#666", "#960"];
-			color = colors[Math.floor(terrain.amount * colors.length)];
+			this.draw(ox, oy, "·", "#960");
 		break;
 	}
 
-	this.draw(x-this._offset[0], y-this._offset[1], ch, color, doNotClear ? "transparent" : "");
 }

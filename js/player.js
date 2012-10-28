@@ -76,10 +76,7 @@ Game.Player.prototype._tryMovement = function(direction) {
 	var x = this._position[0] + dir[0];
 	var y = this._position[1] + dir[1];
 
-	if (x+","+y in Game.beings) { /* occupied */
-		Game.log("That place is already occupied!");
-		return;
-	}
+	if (x+","+y in Game.beings) { return; } /* occupied */
 
 	/* move */
 	Game.setBeing(x, y, this);
