@@ -3,6 +3,7 @@ Game.Player = function() {
 	
 	this._alive = true;
 	this._name = "you";
+	this._char = "@";
 
 	this._movementKeys = {};
 
@@ -57,14 +58,6 @@ Game.Player.prototype.handleEvent = function(e) {
 		window.removeEventListener("keydown", this); 
 		Game.engine.unlock();
 	}
-}
-
-Game.Player.prototype.getChar = function() {
-	return "@";
-}
-
-Game.Player.prototype.getColor = function() {
-	return "#ccc";
 }
 
 Game.Player.prototype.die = function() {

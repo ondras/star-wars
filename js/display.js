@@ -14,7 +14,10 @@ Game.Display = function(options) {
 
 	this._options.width = 60;
 	this._options.height = 25;
+
 	this._effects = {};
+	this._decals = {};
+
 	this._resize();
 
 	window.addEventListener("resize", this);
@@ -28,11 +31,19 @@ Game.Display.prototype.update = function(x, y) {
 
 Game.Display.prototype.setEffect = function(x, y, ch, color) {
 	this._effects[x+","+y] = [ch, color];
+	var f = this._context.font;
+	this._context.font = "bold " + f;
 	this.update(x, y);
+	this._context.font = f;
 }
 
 Game.Display.prototype.removeEffect = function(x, y) {
 	delete this._effects[x+","+y];
+	this.update(x, y);
+}
+
+Game.Display.prototype.setDecal = function(x, y, ch, color, delay) {
+	this._decals[x+","+y] = [ch, color, Date.now() + delay];
 	this.update(x, y);
 }
 
@@ -81,19 +92,27 @@ Game.Display.prototype._resize = function() {
  */
 Game.Display.prototype._drawCell = function(x, y, doNotClear) {
 	var key = x+","+y;
+	var ox = x-this._offset[0];
+	var oy = y-this._offset[1];
 	
 	var effect = this._effects[key];
 	if (effect) {
-		this.draw(x-this._offset[0], y-this._offset[1], effect[0], effect[1], doNotClear ? "transparent" : "");
+		this.draw(ox, oy, effect[0], effect[1], doNotClear ? "transparent" : "");
 		return;
 	}
 
 	var being = Game.beings[key];
 	if (being) {
-		this.draw(x-this._offset[0], y-this._offset[1], being.getChar(), being.getColor(), doNotClear ? "transparent" : "");
+		this.draw(ox, oy, being.getChar(), being.getColor(), doNotClear ? "transparent" : "");
 		return;
 	}
 	
+	var decal = this._decals[key];
+	if (decal) {
+		this.draw(ox, oy, decal[0], decal[1], doNotClear ? "transparent" : "");
+		return;
+	}
+
 	this._drawTerrain(x, y, doNotClear);
 }
 

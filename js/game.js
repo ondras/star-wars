@@ -12,6 +12,9 @@ var Game = {
 		document.body.appendChild(this.display.getContainer());
 
 		this.setBeing(0, 0, this.player);
+		
+		var clone = new Game.Clone();
+		this.setBeing(1, 0, clone);
 
 		this.engine.start();
 	},
@@ -21,7 +24,7 @@ var Game = {
 		if (oldPosition) {
 			var oldKey = oldPosition.join(",");
 			if (this.beings[oldKey] == being) { delete this.beings[oldKey]; }
-			this.display.draw(oldPosition[0], oldPosition[1]);
+			this.display.update(oldPosition[0], oldPosition[1]);
 		}
 
 		var key = x+","+y;
@@ -29,7 +32,7 @@ var Game = {
 
 		if (x !== null) {
 			this.beings[key] = being;
-			this.display.draw(x, y);
+			this.display.update(x, y);
 		}
 
 		if (being == this.player) { this.display.setCenter(); }

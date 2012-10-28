@@ -10,6 +10,9 @@ Game.Lightsaber = function(being) {
 	this._step();
 }
 
+Game.Lightsaber.DAMAGE = 5;
+Game.Lightsaber.DELAY = 50;
+
 Game.Lightsaber.prototype._step = function() {
 	var pos = this._being.getPosition();
 
@@ -27,8 +30,14 @@ Game.Lightsaber.prototype._step = function() {
 	
 	var dir = ROT.DIRS[8][this._dir % 8];
 	var ch = this._chars[this._dir % this._chars.length];
+	var key = (pos[0]+dir[0]) + "," + (pos[1]+dir[1]);
+	var being = Game.beings[key];
+	if (being) {
+		being.adjustHP(-this.constructor.DAMAGE);
+	}
+	
 	Game.display.setEffect(pos[0]+dir[0], pos[1]+dir[1], ch, "red");
-	setTimeout(this._step.bind(this), 50);
+	setTimeout(this._step.bind(this), this.constructor.DELAY);
 }
 
 Game.Lightsaber.prototype._done = function() {
