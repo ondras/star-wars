@@ -17,6 +17,8 @@ var Game = {
 		this.setBeing(-3, 0, new Game.Robot());
 
 		this.engine.start();
+		
+		this.display.showBubble(0, 0, "This is you.");
 	},
 
 	setBeing: function(x, y, being) {

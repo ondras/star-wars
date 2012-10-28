@@ -14,9 +14,13 @@ Game.Display = function(options) {
 
 	this._options.width = 60;
 	this._options.height = 25;
-
+	
 	this._effects = {};
 	this._decals = {};
+	this._bubble = {
+		active: false,
+		cells: {}
+	}
 
 	this._resize();
 
@@ -66,6 +70,15 @@ Game.Display.prototype.setDecal = function(x, y, ch, color, delay) {
 	this.update(x, y);
 }
 
+Game.Display.prototype.showBubble = function(x, y, text) {
+	this._bubble.active = true;
+	this._bubble.cells = {};
+	x -= this._offset[0];
+	y -= this._offset[1];
+	this._bubble.cells[x+","+y] = true;
+	this._dirty = true;
+}
+
 Game.Display.prototype.setCenter = function() {
 	var pos = Game.player.getPosition();
 	this._offset[0] = pos[0]-Math.floor(this._options.width/2);
@@ -78,7 +91,6 @@ Game.Display.prototype.setCenter = function() {
 			this.update(i+this._offset[0], j+this._offset[1]);
 		}
 	}
-
 }
 
 Game.Display.prototype.handleEvent = function(e) {
@@ -114,7 +126,20 @@ Game.Display.prototype._tick = function() {
 		}
 	}
 
+	var drawBubble = false;
+	if (this._bubble.active && this._dirty) {
+		this._context.fillStyle = this._options.bg;
+		this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
+		this._context.globalAlpha = 0.4;
+		drawBubble = true;
+	}
+
 	ROT.Display.prototype._tick.call(this);
+	
+	if (drawBubble) {
+		this._context.globalAlpha = 1;
+		for (var key in this._bubble.cells) { this._draw(key, true); }
+	}
 }
 
 Game.Display.prototype._drawTerrain = function(x, y) {

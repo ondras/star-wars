@@ -62,6 +62,7 @@ Game.Being.prototype._splat = function() {
 		var ch = this._remains.random();
 		var x = this._position[0] + dir[0];
 		var y = this._position[1] + dir[1];
-		Game.display.setDecal(x, y, ch, this._remainsColor, Game.Being.REMAINS_DELAY);
+		var delay = Game.Being.REMAINS_DELAY * (1+ROT.RNG.getUniform());
+		Game.display.setDecal(x, y, ch, this._remainsColor, delay);
 	}
 }
