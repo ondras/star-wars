@@ -16,7 +16,7 @@ var Game = {
 			if (t.className == "jedi") {
 				this._init("#fff", "#33f");
 			} else if (t.className == "sith") {
-				this._init("#666", "#f33");
+				this._init("#888", "#f33");
 			}
 			t = t.parentNode;
 		}

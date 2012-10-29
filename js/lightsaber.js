@@ -1,10 +1,11 @@
 /**
  * One swing with a lightsaber
  */
-Game.Lightsaber = function(being) {
+Game.Lightsaber = function(being, color) {
 	this._being = being;
 	this._dir = -1;
 	this._chars = ["|", "/", "−", "\\"];
+	this._color = color;
 
 	Game.engine.lock();
 	this._step();
@@ -36,7 +37,7 @@ Game.Lightsaber.prototype._step = function() {
 		being.adjustHP(-this.constructor.DAMAGE);
 	}
 	
-	Game.display.setEffect(pos[0]+dir[0], pos[1]+dir[1], ch, "red");
+	Game.display.setEffect(pos[0]+dir[0], pos[1]+dir[1], ch, this._color);
 	setTimeout(this._step.bind(this), this.constructor.DELAY);
 }
 

@@ -1,9 +1,11 @@
-Game.Player = function() {
+Game.Player = function(color, saberColor) {
 	Game.Being.call(this);
 	
 	this._alive = true;
 	this._name = "you";
 	this._char = "@";
+	this._color = color;
+	this._saberColor = saberColor;
 
 	this._maxHP = 13;
 	this._hp = this._maxHP;
@@ -116,6 +118,6 @@ Game.Player.prototype._tryMovement = function(direction) {
 Game.Player.prototype._lightsaber = function() {
 	if (this._mana < Game.Rules.SABER_PRICE) { return false; }
 	this.adjustMana(-Game.Rules.SABER_PRICE);
-	new Game.Lightsaber(this);
+	new Game.Lightsaber(this, this._saberColor);
 	return true;
 }
