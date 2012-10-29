@@ -16,9 +16,9 @@ var Game = {
 		this.setBeing(1, 0, new Game.Clone());
 		this.setBeing(-3, 0, new Game.Robot());
 
-		this.engine.start();
 		
-		this.display.showBubble(0, 0, "This is you.");
+		var bubble = new Game.Bubble(0, 0, "This is you. Move around using arrow keys or numpad.");
+		bubble.then(function() { this.engine.start(); }.bind(this));
 	},
 
 	setBeing: function(x, y, being) {

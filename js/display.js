@@ -17,10 +17,7 @@ Game.Display = function(options) {
 	
 	this._effects = {};
 	this._decals = {};
-	this._bubble = {
-		active: false,
-		cells: {}
-	}
+	this._bubble = null;
 
 	this._resize();
 
@@ -55,6 +52,10 @@ Game.Display.prototype.update = function(x, y) {
 	this._drawTerrain(x, y);
 }
 
+Game.Display.prototype.getOffset = function() {
+	return this._offset;
+}
+
 Game.Display.prototype.setEffect = function(x, y, ch, color) {
 	this._effects[x+","+y] = [ch, color];
 	this.update(x, y);
@@ -70,12 +71,8 @@ Game.Display.prototype.setDecal = function(x, y, ch, color, delay) {
 	this.update(x, y);
 }
 
-Game.Display.prototype.showBubble = function(x, y, text) {
-	this._bubble.active = true;
-	this._bubble.cells = {};
-	x -= this._offset[0];
-	y -= this._offset[1];
-	this._bubble.cells[x+","+y] = true;
+Game.Display.prototype.showBubble = function(bubble) {
+	this._bubble = bubble;
 	this._dirty = true;
 }
 
@@ -127,7 +124,7 @@ Game.Display.prototype._tick = function() {
 	}
 
 	var drawBubble = false;
-	if (this._bubble.active && this._dirty) {
+	if (this._bubble && this._dirty) {
 		this._context.fillStyle = this._options.bg;
 		this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
 		this._context.globalAlpha = 0.4;
@@ -138,7 +135,8 @@ Game.Display.prototype._tick = function() {
 	
 	if (drawBubble) {
 		this._context.globalAlpha = 1;
-		for (var key in this._bubble.cells) { this._draw(key, true); }
+		var cells = this._bubble.getCells();
+		for (var key in cells) { this._draw(key, true); }
 	}
 }
 
