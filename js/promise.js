@@ -1,22 +1,26 @@
 var Promise = function() {
-	this._ok = null;
-	this._then = null;
+	this._callbacks = {
+		ok: null
+	}
+	this._thenPromise = null;
 }
 
 Promise.prototype.then = function(ok) {
-	this._ok = ok;
-	this._then = new Promise();
-	return this._then;
+	this._callbacks.ok = ok;
+	this._thenPromise = new Promise();
+	return this._thenPromise;
 }
 
 Promise.prototype.fulfill = function(value) {
-	if (!this._ok) { return; }
+	if (!this._callbacks.ok) { return; }
 
-	var result = this._ok(value);
+	var result = this._callbacks.ok(value);
 	if (result instanceof Promise) {
 		result.then(function(value) { 
-			this._then.fulfill(value);
+			this._thenPromise.fulfill(value);
 		}.bind(this));
+	} else {
+		this._thenPromise.fulfill(result);
 	}
 }
 

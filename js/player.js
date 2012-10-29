@@ -60,7 +60,7 @@ Game.Player.prototype.handleEvent = function(e) {
 	var used = true;
 	switch (String.fromCharCode(code)) {
 		case "S":
-			this._lightsaber();
+			used = this._lightsaber();
 		break;
 		
 		default:
@@ -104,6 +104,9 @@ Game.Player.prototype._tryMovement = function(direction) {
 
 	if (x+","+y in Game.beings) { return; } /* occupied */
 
+	if (this._hp < this._maxHP && ROT.RNG.getUniform() > Game.Rules.HP_REGEN) { this.adjustHP(1); }
+	if (this._mana < this._maxMana && ROT.RNG.getUniform() > Game.Rules.MANA_REGEN) { this.adjustMana(1); }
+
 	/* move */
 	Game.setBeing(x, y, this);
 	window.removeEventListener("keydown", this);
@@ -111,5 +114,8 @@ Game.Player.prototype._tryMovement = function(direction) {
 }
 
 Game.Player.prototype._lightsaber = function() {
+	if (this._mana < Game.Rules.SABER_PRICE) { return false; }
+	this.adjustMana(-Game.Rules.SABER_PRICE);
 	new Game.Lightsaber(this);
+	return true;
 }

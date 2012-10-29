@@ -2,8 +2,10 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
+		<script src="js/promise.js"></script>
 		<script src="js/rot.js"></script>
 		<script src="js/game.js"></script>
+		<script src="js/rules.js"></script>
 		<script src="js/being.js"></script>
 		<script src="js/player.js"></script>
 		<script src="js/terrain.js"></script>
@@ -12,11 +14,40 @@
 		<script src="js/lightsaber.js"></script>
 		<script src="js/clone.js"></script>
 		<script src="js/robot.js"></script>
-		<script src="js/promise.js"></script>
+		<script src="js/starfield.js"></script>
 		<title>FIXME</title>
 
 		<link href="css/style.css" rel="stylesheet" type="text/css" />
-	<!--	<link href="http://fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css" />-->
+		<link href="http://fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css" />
 	</head>
-	<body onload="Game.init()"></body>
+	<body onload="Game.intro()" class="intro">
+<pre>
+         _________________      ____         __________        
+        /                 |    /    \       |          \       
+       /    ______   _____|   /      \      |    ___    |      
+       \    \    |   |       /   /\   \     |   |___>   |      
+        \    \   |   |      /   /__\   \    |         _/       
+__ ______>    |  |   |     /            \   |   |\    \_______ 
+|            /   |   |    /    ______    \  |   | \           |
+|___________/    |___|   /____/      \____\ |___|  \__________|
+ ____    __    _____   ____         __________      _________  
+\    \  /  \  /    /  /    \       |          \    /         | 
+ \    \/    \/    /  /      \      |    ___    |  /    ______| 
+  \              /  /   /\   \     |   |___>   |  \    \       
+   \            /  /   /__\   \    |         _/    \    \      
+    \    /\    /  /            \   |   |\    \______>    |     
+     \  /  \  /  /    ______    \  |   | \              /      
+      \/    \/  /____/      \____\ |___|  \____________/       
+
+Tiny Roguelike created by Ondřej Žára for GitHub Game Off 2012
+</pre>
+
+<table>
+	<tr>
+		<td class="jedi"><span>@</span>Jedi</td>
+		<td class="sith"><span>@</span>Sith</td>
+	</tr>
+</table>
+
+</body>
 </html>

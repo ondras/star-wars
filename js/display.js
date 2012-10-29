@@ -99,14 +99,14 @@ Game.Display.prototype.updateStats = function() {
 	for (var i=0;i<half;i++) {
 		var y = half - 1 - i;
 		var ch = (hp > i ? "♥" : "♡");
-		this.draw(0, y, ch, "#f33");
+		this.draw(0, y, ch, Game.COLOR_HEALTH);
 	}
 
 	var mana = Game.player.getManaFraction() * half;
 	for (var i=0;i<half;i++) {
 		var y = half + i;
 		var ch = (mana > i ? "⚫" : "⚪");
-		this.draw(0, y, ch, "#33f");
+		this.draw(0, y, ch, Game.COLOR_MANA);
 	}
 }
 
@@ -156,7 +156,9 @@ Game.Display.prototype._tick = function() {
 	if (drawBubble) {
 		this._context.globalAlpha = 1;
 		var cells = this._bubble.getCells();
-		for (var key in cells) { this._draw(key, true); }
+		for (var key in cells) { 
+			if (key in this._data) { this._draw(key, true);  }
+		}
 	}
 }
 
