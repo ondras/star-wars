@@ -1,5 +1,7 @@
 # Star Wars Miniature
 
+Playable version at https://ondras.github.com/star-wars!
+
 ## About
 
 This is a submission to the [GitHub Game Off 2012 contest](https://github.com/blog/1303-github-game-off).
