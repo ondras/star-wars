@@ -17,8 +17,9 @@ var Game = {
 		this.setBeing(-3, 0, new Game.Robot());
 
 		
-		var bubble = new Game.Bubble(0, 0, "This is you. Move around using arrow keys or numpad.");
-		bubble.then(function() { this.engine.start(); }.bind(this));
+		new Game.Bubble(0, 0, "This is you. Move around using arrow keys or numpad.")
+//			.then(function() { new Game.Bubble(-30, 0, "This is your health & force meter."); })
+			.then(function() { this.engine.start(); }.bind(this));
 	},
 
 	setBeing: function(x, y, being) {

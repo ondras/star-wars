@@ -12,8 +12,8 @@ Game.Display = function(options) {
 	this._offset = [0, 0]; /* cell in left-top of canvas */
 	this._canvas.style.position = "relative";
 
-	this._options.width = 60;
-	this._options.height = 25;
+	this._options.width = 61;
+	this._options.height = 26;
 	
 	this._effects = {};
 	this._decals = {};
@@ -78,15 +78,35 @@ Game.Display.prototype.showBubble = function(bubble) {
 
 Game.Display.prototype.setCenter = function() {
 	var pos = Game.player.getPosition();
-	this._offset[0] = pos[0]-Math.floor(this._options.width/2);
+	this._offset[0] = pos[0]-Math.floor((this._options.width-1)/2);
 	this._offset[1] = pos[1]-Math.floor(this._options.height/2);
 
 	this.clear();
 
-	for (var i=0;i<this._options.width;i++) {
+	for (var i=1;i<this._options.width;i++) {
 		for (var j=0;j<this._options.height;j++) {
 			this.update(i+this._offset[0], j+this._offset[1]);
 		}
+	}
+
+	this.updateStats();
+}
+
+Game.Display.prototype.updateStats = function() {
+	var half = Math.floor(this._options.height/2);
+
+	var hp = Game.player.getHPFraction() * half;
+	for (var i=0;i<half;i++) {
+		var y = half - 1 - i;
+		var ch = (hp > i ? "♥" : "♡");
+		this.draw(0, y, ch, "#f33");
+	}
+
+	var mana = Game.player.getManaFraction() * half;
+	for (var i=0;i<half;i++) {
+		var y = half + i;
+		var ch = (mana > i ? "⚫" : "⚪");
+		this.draw(0, y, ch, "#33f");
 	}
 }
 

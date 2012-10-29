@@ -5,6 +5,12 @@ Game.Player = function() {
 	this._name = "you";
 	this._char = "@";
 
+	this._maxHP = 13;
+	this._hp = this._maxHP;
+
+	this._maxMana = 13;
+	this._mana = this._maxMana;
+	
 	this._movementKeys = {};
 
 	this._movementKeys[104]	= 0;
@@ -24,6 +30,14 @@ Game.Player = function() {
 	this._movementKeys[101]	= -1; /* noop */
 }
 Game.Player.extend(Game.Being);
+
+Game.Player.prototype.getHPFraction = function() {
+	return this._hp/this._maxHP;
+}
+
+Game.Player.prototype.getManaFraction = function() {
+	return this._mana/this._maxMana;
+}
 
 Game.Player.prototype.act = function() {
 	Game.engine.lock();
@@ -63,6 +77,18 @@ Game.Player.prototype.handleEvent = function(e) {
 Game.Player.prototype.die = function() {
 	Game.Being.prototype.die.call(this);
 	this._alive = false;
+}
+
+Game.Player.prototype.adjustHP = function(diff) {
+	Game.Being.prototype.adjustHP.call(this, diff);
+	Game.display.updateStats();
+	return this;
+}
+
+Game.Player.prototype.adjustMana = function(diff) {
+	Game.Being.prototype.adjustMana.call(this, diff);
+	Game.display.updateStats();
+	return this;
 }
 
 Game.Player.prototype._tryMovement = function(direction) {

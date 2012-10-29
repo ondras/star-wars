@@ -3,6 +3,7 @@ Game.Being = function() {
 	this._name = "";
 	this._speed = 100;
 	this._hp = 1;
+	this._mana = 0;
 	this._color = "";
 	this._char = "?";
 	this._remains = ["%", "&", "~"];
@@ -42,6 +43,11 @@ Game.Being.prototype.act = function() {
 Game.Being.prototype.adjustHP = function(diff) {
 	this._hp = Math.max(0, this._hp + diff);
 	if (!this._hp) { this.die(); }
+	return this;
+}
+
+Game.Being.prototype.adjustMana = function(diff) {
+	this._mana = Math.max(0, this._mana + diff);
 	return this;
 }
 
