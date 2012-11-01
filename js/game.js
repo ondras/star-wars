@@ -44,8 +44,7 @@ var Game = {
 		var bubble = new Game.Bubble("This is you. Move around using arrow keys or numpad.");
 		bubble.anchorToBeing(this.player);
 		bubble.show();
-		bubble.then(function() { Game.engine.start(); })
-//		.then(function() { return new Game.Bubble("This is your %c{" + Game.COLOR_HEALTH + "}health%c{} & %c{" + Game.COLOR_MANA + "}force%c{} meter.").anchorToDisplay(0, 0).show(); })
+		bubble.then(function() { Game.engine.start(); });
 		setTimeout(function() { document.body.className = ""; }, 1); /* hack to start transition */
 	},
 

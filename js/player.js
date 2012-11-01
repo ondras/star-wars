@@ -13,6 +13,7 @@ Game.Player = function(color, saberColor) {
 	this._maxMana = 13;
 	this._mana = this._maxMana;
 	
+	this._moves = 0; /* successful moves - used to display a bubble */
 	this._movementKeys = {};
 
 	this._movementKeys[104]	= 0;
@@ -106,11 +107,22 @@ Game.Player.prototype._tryMovement = function(direction) {
 
 	if (x+","+y in Game.beings) { return; } /* occupied */
 
+	this._moves++;
 	if (this._hp < this._maxHP && ROT.RNG.getUniform() > Game.Rules.HP_REGEN) { this.adjustHP(1); }
 	if (this._mana < this._maxMana && ROT.RNG.getUniform() > Game.Rules.MANA_REGEN) { this.adjustMana(1); }
 
 	/* move */
 	Game.setBeing(x, y, this);
+
+	if (this._moves == 5) { /* show the bubble */ /* FIXME tune the number */
+		Game.engine.lock();
+		var bubble = new Game.Bubble("This is your %c{" + Game.COLOR_HEALTH + "}health%c{} & %c{" + Game.COLOR_MANA + "}force%c{} meter.");
+		var height = Game.display.getOptions().height;
+		bubble.anchorToColumn(0);
+		bubble.show();
+		bubble.then(function() { Game.engine.unlock(); });
+	}
+
 	window.removeEventListener("keydown", this);
 	Game.engine.unlock();
 }

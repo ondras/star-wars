@@ -1,7 +1,7 @@
 Game.Bubble = function(text) {
 	Promise.call(this);
 
-	this._text = text + "\n\n(Enter to continue)";
+	this._text = text + "\n\n%c{saddlebrown}(Enter to continue)";
 	this._cells = {};
 	this._geom = {
 		border: 2,
@@ -37,11 +37,17 @@ Game.Bubble.prototype.anchorToBeing = function(being) {
 	return this;
 }
 
-Game.Bubble.prototype.anchorToDisplay = function(x, y) {
+Game.Bubble.prototype.anchorToColumn = function(x) {
 	var offset = Game.display.getOffset();
-	x += offset[0];
-	y += offset[1];
-	this._compute(x, y);
+	var height = Game.display.getOptions().height;
+	var y = Math.round(height / 2);
+
+	this._compute(x + offset[0], y + offset[1]);
+
+	for (var i=0;i<height;i++) {
+		this._cells[x+","+i] = true;
+	}
+
 	return this;
 }
 
@@ -78,20 +84,22 @@ Game.Bubble.prototype._compute = function(x, y) {
 
 	this._geom.textWidth = textSize.width;
 	this._geom.width = textSize.width + 2*this._geom.border;
-	this._geom.height = textSize.height + 2*this._geom.border;
+	this._geom.height = textSize.height + 2*this._geom.border - 1;
 
 	if (x < avail.width/3) { /* left */
 		this._geom.left = x + this._geom.dist + 1;
 	} else if (x > 2*avail.width/3) { /* right */
-		this._geom.left = x - this._geom.dist - 2*this._geom.border - textSize.width;
+		this._geom.left = x - this._geom.dist - this._geom.width;
 	} else { /* middle */
 		this._geom.left = Math.round(x - this._geom.border - textSize.width/2);
 	}
 
 	if (y < avail.height/3) { /* top */
 		this._geom.top = y + this._geom.dist + 1;
-	} else { /* middle, bottom */
-		this._geom.top = y - this._geom.dist - 2*this._geom.border - textSize.height;
+	} else if (y > 2*avail.height/3 || (x >= avail.width/3 && x <= 2*avail.width/3)) { /* middle, bottom */
+		this._geom.top = y - this._geom.dist - this._geom.height;
+	} else { /* middle */
+		this._geom.top = Math.round(y - this._geom.border - textSize.height/2);
 	}
 
 }
