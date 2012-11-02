@@ -13,6 +13,7 @@ Game.Lightsaber = function(being, color) {
 
 Game.Lightsaber.DAMAGE = 5;
 Game.Lightsaber.DELAY = 50;
+Game.Lightsaber.DECAL_DELAY = 1000;
 
 Game.Lightsaber.prototype._step = function() {
 	var pos = this._being.getPosition();
@@ -30,12 +31,27 @@ Game.Lightsaber.prototype._step = function() {
 	}
 	
 	var dir = ROT.DIRS[8][this._dir % 8];
+	var x = pos[0]+dir[0];
+	var y = pos[1]+dir[1];
 	var ch = this._chars[this._dir % this._chars.length];
-	var key = (pos[0]+dir[0]) + "," + (pos[1]+dir[1]);
+	var key = x+","+y;
 	var being = Game.beings[key];
+
 	if (being) {
 		being.adjustHP(-this.constructor.DAMAGE);
+	} else {
+		var terrain = Game.terrain.get(x, y)
+		switch (terrain) {
+			case Game.Terrain.TYPE_TREE:
+				Game.terrain.set(x, y, Game.Terrain.TYPE_LAND);
+			break;
+
+			case Game.Terrain.TYPE_ROCK:
+				Game.display.setDecal(x, y, "*", "#666", this.constructor.DECAL_DELAY);
+			break;
+		}
 	}
+
 	
 	Game.display.setEffect(pos[0]+dir[0], pos[1]+dir[1], ch, this._color);
 	setTimeout(this._step.bind(this), this.constructor.DELAY);

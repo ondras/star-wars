@@ -18,11 +18,13 @@ Game.Bubble = function(text) {
 Game.Bubble.extend(Promise);
 
 Game.Bubble.prototype.handleEvent  = function(e) {
-	if (e.keyCode == 13) { 
-		Game.display.showBubble(null);
-		Game.display.setCenter();
-		this.fulfill(); 
-	}
+	if (e.keyCode == 13) { this.fulfill(); }
+}
+
+Game.Bubble.prototype.fulfill = function() {
+	Game.display.showBubble(null);
+	Game.display.setCenter();
+	Promise.prototype.fulfill.call(this); 
 }
 
 Game.Bubble.prototype.getCells = function() {
@@ -49,6 +51,12 @@ Game.Bubble.prototype.anchorToColumn = function(x) {
 	}
 
 	return this;
+}
+
+Game.Bubble.prototype.then = function(what) {
+	var result = Promise.prototype.then.call(this, what);
+	this.fulfill(); /* FIXME oddelat aby zaclo fungovat */
+	return result;
 }
 
 Game.Bubble.prototype.show = function() {

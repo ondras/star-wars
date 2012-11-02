@@ -31,15 +31,14 @@ var Game = {
 		this.player = new Game.Player(color, saber);
 
 		this.engine = new ROT.Engine();
-		this.engine.addActor(this.player);
 
 		this.display = new Game.Display();
 		document.body.appendChild(this.display.getContainer());
 
-		this.setBeing(0, 0, this.player);
-		
-		this.setBeing(1, 0, new Game.Clone());
-		this.setBeing(-3, 0, new Game.Robot());
+		this.spawnBeing(this.player, 0, 0);
+		this.spawnBeing(new Game.Clone(), 1, 0);
+		this.spawnBeing(new Game.Robot(), -3, 0);
+		this.spawnBeing(new Game.Mickey());
 
 		var bubble = new Game.Bubble("This is you. Move around using arrow keys or numpad.");
 		bubble.anchorToBeing(this.player);
@@ -68,10 +67,49 @@ var Game = {
 	},
 	
 	removeBeing: function(being) {
+		this.engine.removeActor(being);
 		var oldPosition = being.getPosition();
 		if (!oldPosition) { return; }
 		var oldKey = oldPosition.join(",");
 		if (this.beings[oldKey] == being) { delete this.beings[oldKey]; }
 		this.display.draw(oldPosition[0], oldPosition[1]);
+	},
+
+	spawnBeing: function(being, x, y) { /* spawn being, optionally at a border */
+		if (arguments.length == 1) {
+			var pos = this._findFreeBorder();
+			if (!pos) { return false; }
+			x = pos[0];
+			y = pos[1];
+		}
+
+		this.engine.addActor(being);
+		this.setBeing(x, y, being);
+
+		return true;
+	},
+
+	_findFreeBorder: function() {
+		var list = [];
+		var opts = Game.display.getOptions();
+		var w = opts.width;
+		var h = opts.height;
+		var offset = Game.display.getOffset();
+
+		for (var i=1;i<w;i++) { /* rows */
+			list.push([i+offset[0], 0+offset[1]]);
+			list.push([i+offset[0], h-1+offset[1]]);
+		}
+
+		for (var j=0;j<h;j++) { /* cols */
+			list.push([1+offset[0], j+offset[1]]);
+			list.push([w-1+offset[0], j+offset[1]]);
+		}
+
+		var avail = [];
+		for (var i=0;i<list.length;i++) {
+			if (Game.terrain.get(list[i][0], list[i][1]) == Game.Terrain.TYPE_LAND) { avail.push(list[i]); }
+		}
+		return avail.random();
 	}
 }

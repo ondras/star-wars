@@ -167,8 +167,8 @@ Game.Display.prototype._drawTerrain = function(x, y) {
 	var oy = y - this._offset[1];
 	var terrain = Game.terrain.get(x, y);
 	switch (terrain) {
-		case Game.Terrain.TYPE_WALL:
-			this.draw(ox, oy, "#", "#ccc");
+		case Game.Terrain.TYPE_ROCK:
+			this.draw(ox, oy, "*", "#ccc");
 		break;
 
 		case Game.Terrain.TYPE_TREE:

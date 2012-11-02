@@ -29,8 +29,6 @@ Game.Player = function(color, saberColor) {
 	this._movementKeys[38] = 0;
 	this._movementKeys[39] = 2;
 	this._movementKeys[40] = 4;
-
-	this._movementKeys[101]	= -1; /* noop */
 }
 Game.Player.extend(Game.Being);
 
@@ -95,17 +93,11 @@ Game.Player.prototype.adjustMana = function(diff) {
 }
 
 Game.Player.prototype._tryMovement = function(direction) {
-	if (direction == -1) { /* noop */
-		window.removeEventListener("keydown", this);
-		Game.engine.unlock();
-		return;
-	}
-
 	var dir = ROT.DIRS[8][direction];
 	var x = this._position[0] + dir[0];
 	var y = this._position[1] + dir[1];
 
-	if (x+","+y in Game.beings) { return; } /* occupied */
+	if (!this._isPassable(x, y)) { return; } /* occupied */
 
 	this._moves++;
 	if (this._hp < this._maxHP && ROT.RNG.getUniform() > Game.Rules.HP_REGEN) { this.adjustHP(1); }

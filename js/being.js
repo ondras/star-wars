@@ -56,6 +56,47 @@ Game.Being.prototype.die = function() {
 	Game.removeBeing(this);
 }
 
+Game.Being.prototype._isPassable = function(x, y) {
+	var key = x+","+y;
+	if (key in Game.beings) { return false; }
+
+	var terrain = Game.terrain.get(x, y);
+	return (terrain == Game.Terrain.TYPE_LAND);
+}
+
+Game.Being.prototype._distance = function(x, y) {
+	return Math.max(Math.abs(x-this._position[0]), Math.abs(y-this._position[1]));
+}
+
+Game.Being.prototype._approach = function(x, y) {
+	var avail = [];
+	var bestDistance = Infinity;
+	var pos = this._position;
+
+	for (var i=0;i<ROT.DIRS[8].length;i++) {
+		var tx = pos[0] + ROT.DIRS[8][i][0];
+		var ty = pos[1] + ROT.DIRS[8][i][1];
+		if (!this._isPassable(tx, ty)) { continue; }
+
+		var dist = Math.max(Math.abs(x-tx), Math.abs(y-ty));
+		if (dist < bestDistance) { 
+			bestDistance = dist;
+			avail = []; 
+		}
+
+		if (dist == bestDistance) { avail.push(i); }
+	}
+
+	if (avail.length) {
+		var dir = ROT.DIRS[8][avail.random()];
+		Game.setBeing(pos[0]+dir[0], pos[1]+dir[1], this);
+		return true;
+	} else {
+		return false;
+	}
+
+}
+
 Game.Being.prototype._splat = function() {
 	var dirs = [[0, 0]];
 	for (var i=0;i<ROT.DIRS[8].length;i++) { dirs.push(ROT.DIRS[8][i]); }
