@@ -67,7 +67,7 @@ var Game = {
 	},
 	
 	removeBeing: function(being) {
-		this.engine.removeActor(being);
+		if (being != Game.player) { this.engine.removeActor(being); }
 		var oldPosition = being.getPosition();
 		if (!oldPosition) { return; }
 		var oldKey = oldPosition.join(",");

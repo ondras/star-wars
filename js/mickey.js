@@ -7,5 +7,5 @@ Game.Mickey.extend(Game.Being);
 
 Game.Mickey.prototype.act = function() {
 	var pos = Game.player.getPosition();
-	this._approach(pos[0], pos[1]);
+	this._getToDistance(0, pos[0], pos[1]);
 }

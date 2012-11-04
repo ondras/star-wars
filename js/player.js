@@ -25,6 +25,10 @@ Game.Player = function(color, saberColor) {
 	this._movementKeys[100]	= 6;
 	this._movementKeys[103]	= 7;
 	
+	this._movementKeys[101]	= -1;
+	this._movementKeys[110]	= -1;
+	this._movementKeys[190]	= -1;
+	
 	this._movementKeys[37] = 6;
 	this._movementKeys[38] = 0;
 	this._movementKeys[39] = 2;
@@ -93,6 +97,12 @@ Game.Player.prototype.adjustMana = function(diff) {
 }
 
 Game.Player.prototype._tryMovement = function(direction) {
+	if (direction == -1) { /* noop */
+		window.removeEventListener("keydown", this); 
+		Game.engine.unlock();
+		return;
+	}
+	
 	var dir = ROT.DIRS[8][direction];
 	var x = this._position[0] + dir[0];
 	var y = this._position[1] + dir[1];

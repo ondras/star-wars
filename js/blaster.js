@@ -14,8 +14,8 @@ Game.Blaster = function(being, x, y) {
 }
 
 Game.Blaster.COLOR = "#f00";
-Game.Blaster.DAMAGE = 5;
-Game.Blaster.DELAY = 50;
+Game.Blaster.DAMAGE = 1;
+Game.Blaster.DELAY = 100;
 Game.Blaster.DECAL_DELAY = 1000;
 
 Game.Blaster.prototype._compute = function(sx, sy, tx, ty) {

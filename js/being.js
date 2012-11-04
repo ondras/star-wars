@@ -68,9 +68,9 @@ Game.Being.prototype._distance = function(x, y) {
 	return Math.max(Math.abs(x-this._position[0]), Math.abs(y-this._position[1]));
 }
 
-Game.Being.prototype._approach = function(x, y) {
+Game.Being.prototype._getToDistance = function(optimalDistance, x, y) {
 	var avail = [];
-	var bestDistance = Infinity;
+	var bestDistance = null;
 	var pos = this._position;
 
 	for (var i=0;i<ROT.DIRS[8].length;i++) {
@@ -79,7 +79,7 @@ Game.Being.prototype._approach = function(x, y) {
 		if (!this._isPassable(tx, ty)) { continue; }
 
 		var dist = Math.max(Math.abs(x-tx), Math.abs(y-ty));
-		if (dist < bestDistance) { 
+		if (bestDistance === null || Math.abs(dist - optimalDistance) < Math.abs(bestDistance - optimalDistance)) {
 			bestDistance = dist;
 			avail = []; 
 		}
@@ -95,6 +95,29 @@ Game.Being.prototype._approach = function(x, y) {
 		return false;
 	}
 
+}
+
+/**
+ * Random movement
+ */
+Game.Being.prototype._wander = function(x, y) {
+	var avail = [];
+	var pos = this._position;
+	
+	for (var i=0;i<ROT.DIRS[8].length;i++) {
+		var tx = pos[0] + ROT.DIRS[8][i][0];
+		var ty = pos[1] + ROT.DIRS[8][i][1];
+		if (!this._isPassable(tx, ty)) { continue; }
+		avail.push(i);
+	}
+
+	if (avail.length) {
+		var dir = ROT.DIRS[8][avail.random()];
+		Game.setBeing(pos[0]+dir[0], pos[1]+dir[1], this);
+		return true;
+	} else {
+		return false;
+	}
 }
 
 Game.Being.prototype._splat = function() {
