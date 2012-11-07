@@ -107,6 +107,8 @@ Game.Display.prototype.updateStats = function() {
 		var y = half + i;
 		var ch = (mana > i ? "⚫" : "⚪");
 		this.draw(0, y, ch, Game.COLOR_MANA);
+
+		/* □ ■ */
 	}
 }
 

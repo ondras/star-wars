@@ -1,7 +1,7 @@
 Game.Tutorial = function() {
 	this._turns = 0;
 	this._kills = 0;
-	this._phase = this.constructor.PHASE_INTRO + 100;
+	this._phase = this.constructor.PHASE_INTRO + 1000;
 }
 Game.Tutorial.PHASE_INTRO		= 0;
 Game.Tutorial.PHASE_MOVEMENT	= 1;
@@ -18,7 +18,7 @@ Game.Tutorial.prototype.addKill = function(being) {
 		this._phase = this.constructor.PHASE_GAMEOVER;
 	} else {
 		this._kills++;
-		if (this._kills == 2) { this._phase = this.constructor.PHASE_OUTRO; } /* FIXME constant */
+		if (this._kills == 26) { this._phase = this.constructor.PHASE_OUTRO; } /* FIXME constant */
 	}
 }
 
