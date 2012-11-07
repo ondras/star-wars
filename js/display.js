@@ -4,7 +4,8 @@ Game.Display = function(options) {
 		fontFamily: "droid sans mono, monospace",
 		spacing: 1.1,
 		width: 1,
-		height: 1
+		height: 1,
+		fg: "#aaa"
 	}
 	ROT.Display.call(this, options);
 	this._ratio = this._charWidth / options.fontSize; /* measure ratio */
@@ -98,7 +99,7 @@ Game.Display.prototype.setCenter = function() {
 	this.updateStats();
 	this.updateScore();
 
-	this.drawText(2, this._options.height-1, this._status);
+	this.drawText(0, this._options.height-1, this._status);
 }
 
 Game.Display.prototype.updateStats = function() {

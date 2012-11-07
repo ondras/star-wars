@@ -11,8 +11,14 @@ Game.Player = function(color, saberColor) {
 
 	this._maxMana = 13;
 	this._mana = this._maxMana;
+
+	this._powers = {
+		lightsaber: false,
+		push: false,
+		pull: false,
+		fork: false
+	}
 	
-	this._moves = 0; /* successful moves - used to display a bubble */
 	this._movementKeys = {};
 
 	this._movementKeys[104]	= 0;
@@ -34,6 +40,11 @@ Game.Player = function(color, saberColor) {
 	this._movementKeys[40] = 4;
 }
 Game.Player.extend(Game.Being);
+
+Game.Player.prototype.adjustPowers = function(obj) {
+	for (var p in obj) { this._powers[p] = obj[p]; }
+	this._buildStatus();
+}
 
 Game.Player.prototype.getHPFraction = function() {
 	return this._hp/this._maxHP;
@@ -59,6 +70,7 @@ Game.Player.prototype.handleEvent = function(e) {
 	var used = true;
 	switch (String.fromCharCode(code)) {
 		case "S":
+			if (!this._powers.lightsaber) { return false; }
 			used = this._lightsaber();
 		break;
 		
@@ -98,7 +110,6 @@ Game.Player.prototype._tryMovement = function(direction) {
 
 	if (!this._isPassable(x, y)) { return; } /* occupied */
 
-	this._moves++;
 	if (this._hp < this._maxHP && ROT.RNG.getUniform() > Game.Rules.HP_REGEN) { this.adjustHP(1); }
 	if (this._mana < this._maxMana && ROT.RNG.getUniform() > Game.Rules.MANA_REGEN) { this.adjustMana(1); }
 
@@ -114,4 +125,14 @@ Game.Player.prototype._lightsaber = function() {
 	this.adjustMana(-Game.Rules.SABER_PRICE);
 	new Game.Lightsaber(this, this._saberColor);
 	return true;
+}
+
+Game.Player.prototype._buildStatus = function() {
+	var data = [];
+
+	if (this._powers.lightsaber) {
+		data.push("Lightsaber=%c{#fff}s%c{}");
+	}
+
+	Game.display.setStatus(data.join("  "));
 }

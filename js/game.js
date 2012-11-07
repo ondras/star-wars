@@ -49,6 +49,8 @@ var Game = {
 		this.spawnBeing(new Game.Mickey());
 
 		setTimeout(function() { document.body.className = ""; }, 1); /* hack to start transition */
+
+		this.player.adjustPowers({lightsaber:true});
 		Game.engine.start();
 	},
 

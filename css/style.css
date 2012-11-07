@@ -9,11 +9,11 @@ canvas {
 	display: block;
 	margin: auto;
 	opacity: 1;
-	-webkit-transition: opacity 2s;
-	-moz-transition: opacity 2s;
-	-ms-transition: opacity 2s;
-	-o-transition: opacity 2s;
-	transition: opacity 2s;
+	-webkit-transition: opacity 3s;
+	-moz-transition: opacity 3s;
+	-ms-transition: opacity 3s;
+	-o-transition: opacity 3s;
+	transition: opacity 3s;
 }
 
 body.intro canvas {
@@ -46,6 +46,7 @@ table td {
 table span {
 	font-size: 1000%;
 	display: block;
+	font-weight: normal;
 }
 
 .jedi {
