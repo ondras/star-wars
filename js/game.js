@@ -103,14 +103,14 @@ var Game = {
 		var h = opts.height;
 		var offset = Game.display.getOffset();
 
-		for (var i=1;i<w;i++) { /* rows */
+		for (var i=1;i<w-1;i++) { /* rows */
 			list.push([i+offset[0], 0+offset[1]]);
-			list.push([i+offset[0], h-1+offset[1]]);
+			list.push([i+offset[0], h-2+offset[1]]);
 		}
 
-		for (var j=0;j<h;j++) { /* cols */
+		for (var j=0;j<h-1;j++) { /* cols */
 			list.push([1+offset[0], j+offset[1]]);
-			list.push([w-1+offset[0], j+offset[1]]);
+			list.push([w-2+offset[0], j+offset[1]]);
 		}
 
 		var avail = [];

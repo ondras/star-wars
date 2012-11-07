@@ -43,7 +43,7 @@ Game.Bubble.prototype.anchorToBeing = function(being) {
 
 Game.Bubble.prototype.anchorToColumn = function(x) {
 	var offset = Game.display.getOffset();
-	var height = Game.display.getOptions().height;
+	var height = Game.display.getOptions().height-1;
 	var y = Math.round(height / 2);
 
 	this._compute(x + offset[0], y + offset[1]);

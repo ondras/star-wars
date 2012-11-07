@@ -12,12 +12,13 @@ Game.Display = function(options) {
 	this._offset = [0, 0]; /* cell in left-top of canvas */
 	this._canvas.style.position = "relative";
 
-	this._options.width = 61;
-	this._options.height = 26;
-	
+	this._options.width = 62;
+	this._options.height = 27;
+
 	this._effects = {};
 	this._decals = {};
 	this._bubble = null;
+	this._status = "This is a status.";
 
 	this._resize();
 
@@ -76,25 +77,32 @@ Game.Display.prototype.showBubble = function(bubble) {
 	this._dirty = true;
 }
 
+Game.Display.prototype.setStatus = function(status) {
+	this._status = status;
+	this.setCenter(); /* redraw all */
+}
+
 Game.Display.prototype.setCenter = function() {
 	var pos = Game.player.getPosition();
 	this._offset[0] = pos[0]-Math.floor((this._options.width-2)/2);
-	this._offset[1] = pos[1]-Math.floor(this._options.height/2);
+	this._offset[1] = pos[1]-Math.floor((this._options.height-1)/2);
 
 	this.clear();
 
-	for (var i=1;i<this._options.width;i++) {
-		for (var j=0;j<this._options.height;j++) {
+	for (var i=1;i<this._options.width-1;i++) {
+		for (var j=0;j<this._options.height-1;j++) {
 			this.update(i+this._offset[0], j+this._offset[1]);
 		}
 	}
 
 	this.updateStats();
 	this.updateScore();
+
+	this.drawText(2, this._options.height-1, this._status);
 }
 
 Game.Display.prototype.updateStats = function() {
-	var half = Math.floor(this._options.height/2);
+	var half = Math.floor((this._options.height-1)/2);
 
 	var hp = Game.player.getHPFraction() * half;
 	for (var i=0;i<half;i++) {
@@ -116,9 +124,9 @@ Game.Display.prototype.updateStats = function() {
 Game.Display.prototype.updateScore = function() {
 	var score = Game.tutorial.getScore();
 	var x = this._options.width-1;
-	for (var i=0; i<this._options.height; i++) {
+	for (var i=0; i<this._options.height-1; i++) {
 		var ch = (score > i ? "■" : "□");
-		this.draw(x, this._options.height-i-1, ch, Game.COLOR_SCORE);
+		this.draw(x, this._options.height-i-2, ch, Game.COLOR_SCORE);
 	}
 }
 
