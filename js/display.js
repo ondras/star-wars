@@ -143,23 +143,14 @@ Game.Display.prototype._tick = function() {
 		}
 	}
 
-	var drawBubble = false;
-	if (this._bubble && this._dirty) {
-		this._context.fillStyle = this._options.bg;
-		this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
-		this._context.globalAlpha = 0.4;
-		drawBubble = true;
-	}
-
 	ROT.Display.prototype._tick.call(this);
-	
-	if (drawBubble) {
-		this._context.globalAlpha = 1;
-		var cells = this._bubble.getCells();
-		for (var key in cells) { 
-			if (key in this._data) { this._draw(key, true);  }
-		}
-	}
+}
+
+Game.Display.prototype._draw = function(key, clearBefore) {
+	if (this._bubble && !(key in this._bubble.getCells())) { this._context.globalAlpha = 0.4; }
+	var result = ROT.Display.prototype._draw.call(this, key, clearBefore);
+	this._context.globalAlpha = 1;
+	return result;
 }
 
 Game.Display.prototype._drawTerrain = function(x, y) {

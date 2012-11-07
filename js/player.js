@@ -1,7 +1,6 @@
 Game.Player = function(color, saberColor) {
 	Game.Being.call(this);
 	
-	this._alive = true;
 	this._name = "you";
 	this._char = "@";
 	this._color = color;
@@ -46,12 +45,7 @@ Game.Player.prototype.getManaFraction = function() {
 
 Game.Player.prototype.act = function() {
 	Game.engine.lock();
-	
-	if (this._alive) {
-		window.addEventListener("keydown", this); /* wait for input */
-	} else {
-		alert("Game over");
-	}
+	window.addEventListener("keydown", this); /* wait for input */
 }
 
 Game.Player.prototype.handleEvent = function(e) {
@@ -77,11 +71,6 @@ Game.Player.prototype.handleEvent = function(e) {
 		window.removeEventListener("keydown", this); 
 		Game.engine.unlock();
 	}
-}
-
-Game.Player.prototype.die = function() {
-	Game.Being.prototype.die.call(this);
-	this._alive = false;
 }
 
 Game.Player.prototype.adjustHP = function(diff) {
@@ -115,15 +104,6 @@ Game.Player.prototype._tryMovement = function(direction) {
 
 	/* move */
 	Game.setBeing(x, y, this);
-
-	if (this._moves == 5) { /* show the bubble */ /* FIXME tune the number */
-		Game.engine.lock();
-		var bubble = new Game.Bubble("This is your %c{" + Game.COLOR_HEALTH + "}health%c{} & %c{" + Game.COLOR_MANA + "}force%c{} meter.");
-		var height = Game.display.getOptions().height;
-		bubble.anchorToColumn(0);
-		bubble.show();
-		bubble.then(function() { Game.engine.unlock(); });
-	}
 
 	window.removeEventListener("keydown", this);
 	Game.engine.unlock();

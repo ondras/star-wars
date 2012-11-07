@@ -1,7 +1,8 @@
-Game.Bubble = function(text) {
+Game.Bubble = function(text, final) {
 	Promise.call(this);
 
-	this._text = text + "\n\n%c{saddlebrown}(Enter to continue)";
+	this._text = text + (final ? "" : "\n\n%c{saddlebrown}(Enter to continue)");
+	this._final = final;
 	this._cells = {};
 	this._geom = {
 		border: 2,
@@ -13,7 +14,7 @@ Game.Bubble = function(text) {
 		textWidth: 0
 	};
 
-	window.addEventListener("keydown", this);
+	if (!final) { window.addEventListener("keydown", this); }
 }
 Game.Bubble.extend(Promise);
 
@@ -22,6 +23,7 @@ Game.Bubble.prototype.handleEvent  = function(e) {
 }
 
 Game.Bubble.prototype.fulfill = function() {
+	window.removeEventListener("keydown", this);
 	Game.display.showBubble(null);
 	Game.display.setCenter();
 	Promise.prototype.fulfill.call(this); 
@@ -51,12 +53,6 @@ Game.Bubble.prototype.anchorToColumn = function(x) {
 	}
 
 	return this;
-}
-
-Game.Bubble.prototype.then = function(what) {
-	var result = Promise.prototype.then.call(this, what);
-	this.fulfill(); /* FIXME oddelat aby zaclo fungovat */
-	return result;
 }
 
 Game.Bubble.prototype.show = function() {
@@ -92,7 +88,7 @@ Game.Bubble.prototype._compute = function(x, y) {
 
 	this._geom.textWidth = textSize.width;
 	this._geom.width = textSize.width + 2*this._geom.border;
-	this._geom.height = textSize.height + 2*this._geom.border - 1;
+	this._geom.height = textSize.height + 2*this._geom.border - (this._final ? 0 : 1);
 
 	if (x < avail.width/3) { /* left */
 		this._geom.left = x + this._geom.dist + 1;

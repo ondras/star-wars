@@ -2,6 +2,11 @@ var Game = {
 	COLOR_HEALTH: "#f33",
 	COLOR_MANA: "#33f",
 	beings: {},
+	terrain: null,
+	player: null,
+	engine: null,
+	tutorial: null,
+	display: null,
 
 	intro: function() {
 		if (!ROT.isSupported()) { return alert("Sorry, your browser is not sexy enough to run this game :-("); }
@@ -31,6 +36,8 @@ var Game = {
 		this.player = new Game.Player(color, saber);
 
 		this.engine = new ROT.Engine();
+		this.tutorial = new Game.Tutorial();
+		this.engine.addActor(this.tutorial);
 
 		this.display = new Game.Display();
 		document.body.appendChild(this.display.getContainer());
@@ -40,11 +47,8 @@ var Game = {
 		this.spawnBeing(new Game.Robot(), -3, 0);
 		this.spawnBeing(new Game.Mickey());
 
-		var bubble = new Game.Bubble("This is you. Move around using arrow keys or numpad.");
-		bubble.anchorToBeing(this.player);
-		bubble.show();
-		bubble.then(function() { Game.engine.start(); });
 		setTimeout(function() { document.body.className = ""; }, 1); /* hack to start transition */
+		Game.engine.start();
 	},
 
 	setBeing: function(x, y, being) {
@@ -67,7 +71,8 @@ var Game = {
 	},
 	
 	removeBeing: function(being) {
-		if (being != Game.player) { this.engine.removeActor(being); }
+		this.tutorial.addKill(being);
+		this.engine.removeActor(being); 
 		var oldPosition = being.getPosition();
 		if (!oldPosition) { return; }
 		var oldKey = oldPosition.join(",");
