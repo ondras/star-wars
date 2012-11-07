@@ -78,7 +78,7 @@ Game.Display.prototype.showBubble = function(bubble) {
 
 Game.Display.prototype.setCenter = function() {
 	var pos = Game.player.getPosition();
-	this._offset[0] = pos[0]-Math.floor((this._options.width-1)/2);
+	this._offset[0] = pos[0]-Math.floor((this._options.width-2)/2);
 	this._offset[1] = pos[1]-Math.floor(this._options.height/2);
 
 	this.clear();
@@ -90,6 +90,7 @@ Game.Display.prototype.setCenter = function() {
 	}
 
 	this.updateStats();
+	this.updateScore();
 }
 
 Game.Display.prototype.updateStats = function() {
@@ -109,6 +110,15 @@ Game.Display.prototype.updateStats = function() {
 		this.draw(0, y, ch, Game.COLOR_MANA);
 
 		/* □ ■ */
+	}
+}
+
+Game.Display.prototype.updateScore = function() {
+	var score = Game.tutorial.getScore();
+	var x = this._options.width-1;
+	for (var i=0; i<this._options.height; i++) {
+		var ch = (score > i ? "■" : "□");
+		this.draw(x, this._options.height-i-1, ch, Game.COLOR_SCORE);
 	}
 }
 

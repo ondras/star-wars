@@ -13,6 +13,10 @@ Game.Tutorial.prototype.getSpeed = function() {
 	return 100;
 }
 
+Game.Tutorial.prototype.getScore = function() {
+	return this._kills;
+}
+
 Game.Tutorial.prototype.addKill = function(being) {
 	if (being == Game.player) {
 		this._phase = this.constructor.PHASE_GAMEOVER;

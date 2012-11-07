@@ -1,6 +1,7 @@
 var Game = {
 	COLOR_HEALTH: "#f33",
 	COLOR_MANA: "#33f",
+	COLOR_SCORE: "#ff3",
 	beings: {},
 	terrain: null,
 	player: null,
@@ -78,6 +79,7 @@ var Game = {
 		var oldKey = oldPosition.join(",");
 		if (this.beings[oldKey] == being) { delete this.beings[oldKey]; }
 		this.display.draw(oldPosition[0], oldPosition[1]);
+		this.display.updateScore();
 	},
 
 	spawnBeing: function(being, x, y) { /* spawn being, optionally at a border */
