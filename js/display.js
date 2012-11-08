@@ -28,11 +28,14 @@ Game.Display = function(options) {
 Game.Display.extend(ROT.Display);
 
 Game.Display.prototype.update = function(x, y) {
-	/* FIXME visibility? asi ne */
-	var key = x+","+y;
 	var ox = x-this._offset[0];
 	var oy = y-this._offset[1];
+
+	if (ox <= 0 || ox >= this._options.width-1) { return; }
+	if (oy < 0 || oy >= this._options.height-1) { return; }
 	
+	var key = x+","+y;
+
 	var effect = this._effects[key];
 	if (effect) {
 		this.draw(ox, oy, effect[0], effect[1]);

@@ -43,9 +43,6 @@ var Game = {
 		document.body.appendChild(this.display.getContainer());
 
 		this.spawnBeing(this.player, 0, 0);
-		this.spawnBeing(new Game.Clone(), 1, 0);
-		this.spawnBeing(new Game.Robot(), -3, 0);
-		this.spawnBeing(new Game.Mickey());
 
 		setTimeout(function() { document.body.className = ""; }, 1); /* hack to start transition */
 

@@ -2,7 +2,7 @@ Game.Tutorial = function() {
 	this._turnsTotal = 0;
 	this._turnsLocal = 0;
 	this._kills = 0;
-	this._phase = this.constructor.PHASE_GAME*0;
+	this._phase = this.constructor.PHASE_GAME;
 }
 
 Game.Tutorial.PHASE_INTRO		= 0;
@@ -96,7 +96,7 @@ Game.Tutorial.prototype._showIntroBubbles = function() {
 		"Move around by using arrow keys or numpad. Try it now!",
 	];
 
-	var lastCol = Game.display.getOptions().width - 1;
+	var lastCol = Game.display.getOptions().width-1;
 
 	var anchorCallbacks = [
 		function(bubble) { bubble.anchorToBeing(Game.player); },
@@ -145,5 +145,29 @@ Game.Tutorial.prototype._showGameoverBubble = function() {
  * Spawn a random enemy
  */
 Game.Tutorial.prototype._spawn = function() {
+	var def = {};
+	def["Mickey"] = 4;
+	def["Robot"] = 3;
+	def["Clone"] = 2;
 
+	var name = this._pickRandom(def);
+	var being = new Game[name]();
+	Game.spawnBeing(being);
+	console.log("spawned", name, being.getPosition())
+}
+
+Game.Tutorial.prototype._pickRandom = function(data) {
+	var avail = [];
+	var total = 0;
+	
+	for (var id in data) {
+		total += data[id];
+	}
+	var random = Math.floor(ROT.RNG.getUniform()*total);
+	
+	var part = 0;
+	for (var id in data) {
+		part += data[id];
+		if (random < part) { return id; }
+	}
 }
