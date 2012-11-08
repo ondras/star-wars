@@ -153,7 +153,6 @@ Game.Tutorial.prototype._spawn = function() {
 	var name = this._pickRandom(def);
 	var being = new Game[name]();
 	Game.spawnBeing(being);
-	console.log("spawned", name, being.getPosition())
 }
 
 Game.Tutorial.prototype._pickRandom = function(data) {
