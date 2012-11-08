@@ -11,7 +11,6 @@ Game.Lightsaber = function(being, color) {
 	this._step();
 }
 
-Game.Lightsaber.DAMAGE = 5;
 Game.Lightsaber.DELAY = 50;
 Game.Lightsaber.DECAL_DELAY = 1000;
 
@@ -38,7 +37,7 @@ Game.Lightsaber.prototype._step = function() {
 	var being = Game.beings[key];
 
 	if (being) {
-		being.adjustHP(-this.constructor.DAMAGE);
+		being.adjustHP(-Game.Rules.SABER_DAMAGE);
 	} else {
 		var terrain = Game.terrain.get(x, y)
 		switch (terrain) {

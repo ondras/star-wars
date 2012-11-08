@@ -14,7 +14,6 @@ Game.Blaster = function(being, x, y) {
 }
 
 Game.Blaster.COLOR = "#f00";
-Game.Blaster.DAMAGE = 1;
 Game.Blaster.DELAY = 100;
 Game.Blaster.DECAL_DELAY = 1000;
 
@@ -62,7 +61,7 @@ Game.Blaster.prototype._step = function() {
 	var key = (this._current[0]) + "," + (this._current[1]);
 	var being = Game.beings[key];
 	if (being) {
-		being.adjustHP(-this.constructor.DAMAGE);
+		being.adjustHP(-Game.Rules.BLASTER_DAMAGE);
 		ch = "*";
 	} else {
 		var terrain = Game.terrain.get(this._current[0], this._current[1]);

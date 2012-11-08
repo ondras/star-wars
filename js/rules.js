@@ -1,5 +1,9 @@
 Game.Rules = {
-	SABER_PRICE: 1,
 	MANA_REGEN: 0.7,
-	HP_REGEN: 0.9
+	HP_REGEN: 0.9,
+
+	SABER_PRICE: 1,
+	SABER_DAMAGE: 5,
+
+	BLASTER_DAMAGE: 1
 }
