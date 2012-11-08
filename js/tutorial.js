@@ -2,7 +2,7 @@ Game.Tutorial = function() {
 	this._turnsTotal = 0;
 	this._turnsLocal = 0;
 	this._kills = 0;
-	this._phase = this.constructor.PHASE_GAME*0;
+	this._phase = this.constructor.PHASE_GAME;
 }
 
 Game.Tutorial.PHASE_INTRO		= 0;
@@ -26,7 +26,7 @@ Game.Tutorial.prototype.addKill = function(being) {
 		this._kills++;
 		if (this._kills == 26) { /* FIXME constant */
 			this._phase = this.constructor.PHASE_OUTRO;
-		} else {
+		} else if (this._phase != this.constructor.PHASE_GAME) {
 			this._phase++; /* switch to next phase */
 			this._turnsLocal = 0;
 		}
