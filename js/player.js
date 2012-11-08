@@ -1,10 +1,11 @@
-Game.Player = function(color, saberColor) {
+Game.Player = function(type) {
 	Game.Being.call(this);
 	
 	this._name = "you";
 	this._char = "@";
-	this._color = color;
-	this._saberColor = saberColor;
+	this._type = type;
+	this._color = (type == "jedi" ? "#fff" : "#888");
+	this._saberColor = (type == "jedi" ? "#33f" : "#f33");
 
 	this._maxHP = 13;
 	this._hp = this._maxHP;
@@ -40,6 +41,10 @@ Game.Player = function(color, saberColor) {
 	this._movementKeys[40] = 4;
 }
 Game.Player.extend(Game.Being);
+
+Game.Player.prototype.getType = function() {
+	return this._type;
+}
 
 Game.Player.prototype.adjustPowers = function(obj) {
 	for (var p in obj) { this._powers[p] = obj[p]; }

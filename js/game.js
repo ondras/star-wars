@@ -19,10 +19,9 @@ var Game = {
 	handleEvent: function(e) {
 		var t = e.target;
 		while (t) {
-			if (t.className == "jedi") {
-				this._init("#fff", "#33f");
-			} else if (t.className == "sith") {
-				this._init("#888", "#f33");
+			if (t.className == "jedi" || t.className == "sith") { 
+				this._init(t.className); 
+				break
 			}
 			t = t.parentNode;
 		}

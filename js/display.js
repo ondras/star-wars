@@ -14,7 +14,7 @@ Game.Display = function(options) {
 	this._canvas.style.position = "relative";
 
 	this._options.width = 62;
-	this._options.height = 27;
+	this._options.height = Game.Rules.TARGET_KILLS + 1;
 
 	this._effects = {};
 	this._decals = {};

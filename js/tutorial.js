@@ -2,7 +2,7 @@ Game.Tutorial = function() {
 	this._turnsTotal = 0;
 	this._turnsLocal = 0;
 	this._kills = 0;
-	this._phase = this.constructor.PHASE_GAME;
+	this._phase = this.constructor.PHASE_GAME*0;
 }
 
 Game.Tutorial.PHASE_INTRO		= 0;
@@ -24,7 +24,7 @@ Game.Tutorial.prototype.addKill = function(being) {
 		this._phase = this.constructor.PHASE_GAMEOVER;
 	} else {
 		this._kills++;
-		if (this._kills == 26) { /* FIXME constant */
+		if (this._kills == Game.Rules.TARGET_KILLS) {
 			this._phase = this.constructor.PHASE_OUTRO;
 		} else if (this._phase != this.constructor.PHASE_GAME) {
 			this._phase++; /* switch to next phase */
@@ -39,6 +39,7 @@ Game.Tutorial.prototype.act = function() {
 
 	switch (this._phase) {
 		case this.constructor.PHASE_INTRO:
+			this._turnsLocal = 0;
 			this._showIntroBubbles();
 		break;
 
@@ -47,7 +48,7 @@ Game.Tutorial.prototype.act = function() {
 		break;
 
 		case this.constructor.PHASE_GAME:
-			if (ROT.RNG.getUniform() > 0.8) { this._spawn(); } /* FIXME constant */
+			if (ROT.RNG.getUniform() > Game.Rules.SPAWN_CHANCE) { this._spawn(); }
 		break;
 
 		case this.constructor.PHASE_OUTRO:
@@ -85,15 +86,23 @@ Game.Tutorial.prototype._showBubbles = function(texts, anchorCallbacks, doneCall
 
 Game.Tutorial.prototype._showIntroBubbles = function() {
 	Game.engine.lock();
+	var name = Game.player.getType();
+	name = name.charAt(0).toUpperCase() + name.substring(1);
 
 	var texts = [
-		"This is you. Move around using arrow keys or numpad.",
-		"This is your %c{" + Game.COLOR_HEALTH + "}health%c{} & %c{" + Game.COLOR_MANA + "}force%c{} meter."
+		"This is you, a mighty " + name + ". Move around using arrow keys or numpad.",
+		"This is your %c{" + Game.COLOR_HEALTH + "}health%c{} & %c{" + Game.COLOR_MANA + "}force%c{} meter. Both health and force slowly regenerate.",
+		"This is your score bar. " + Game.Rules.TARGET_KILLS + " kills are necessary to finish your training.",
+		"Move around by using arrow keys or numpad. Try it now!",
 	];
+
+	var lastCol = Game.display.getOptions().width - 1;
 
 	var anchorCallbacks = [
 		function(bubble) { bubble.anchorToBeing(Game.player); },
 		function(bubble) { bubble.anchorToColumn(0); },
+		function(bubble) { bubble.anchorToColumn(lastCol); },
+		function(bubble) { bubble.anchorToBeing(Game.player); }
 	]
 
 	var doneCallback = function() {
@@ -101,7 +110,6 @@ Game.Tutorial.prototype._showIntroBubbles = function() {
 		this._turnsLocal = 0;
 		Game.engine.unlock();
 	}
-
 
 	this._showBubbles(texts, anchorCallbacks, doneCallback.bind(this));
 }
@@ -115,25 +123,22 @@ Game.Tutorial.prototype._showStatsBubble = function() {
 	}
 
 	var bubble = new Game.Bubble("This is your %c{" + Game.COLOR_HEALTH + "}health%c{} & %c{" + Game.COLOR_MANA + "}force%c{} meter.");
-	bubble.anchorToColumn(0);
-	bubble.show();
+	bubble.anchorToColumn(0).show();
 	bubble.then(cb.bind(this));
 }
 
 Game.Tutorial.prototype._showOutroBubble = function() {
 	Game.engine.lock();
 
-	var bubble = new Game.Bubble("Congratulations! You have finished your training and mastered the way of the Force!", true);
-	bubble.anchorToBeing(Game.player);
-	bubble.show();
+	var bubble = new Game.Bubble("Congratulations! You have finished your training and mastered the way of the Force!\n\nElapsed turns: %c{#fff}" + (this._turnsTotal-1), true);
+	bubble.anchorToBeing(Game.player).show();
 }
 
 Game.Tutorial.prototype._showGameoverBubble = function() {
 	Game.engine.lock();
 
 	var bubble = new Game.Bubble("You are dead.\n\nGame over!", true);
-	bubble.anchorToBeing(Game.player);
-	bubble.show();
+	bubble.anchorToBeing(Game.player).show();
 }
 
 /**
