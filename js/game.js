@@ -13,17 +13,32 @@ var Game = {
 		if (!ROT.isSupported()) { return alert("Sorry, your browser is not sexy enough to run this game :-("); }
 
 		document.addEventListener("click", this);
+		window.addEventListener("keydown", this);
 		Game.Starfield.start();
 	},
 
 	handleEvent: function(e) {
-		var t = e.target;
-		while (t) {
-			if (t.className == "jedi" || t.className == "sith") { 
-				this._init(t.className); 
-				break;
-			}
-			t = t.parentNode;
+		switch (e.type) {
+			case "click":
+				var t = e.target;
+				while (t) {
+					if (t.className == "jedi" || t.className == "sith") { 
+						this._init(t.className); 
+						break;
+					}
+					t = t.parentNode;
+				}
+			break;
+
+			case "keydown": /* to prevent quick search */
+				var mods = ["alt", "ctrl", "meta", "shift"];
+				var prevent = true;
+				for (var i=0;i<mods.length;i++) {
+					var name = mods[i] + "Key";
+					if (e[name]) { prevent = false; }
+				}
+				if (prevent) { e.preventDefault(); }
+			break;
 		}
 	},
 

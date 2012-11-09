@@ -66,14 +66,6 @@ Game.Player.prototype.act = function() {
 
 Game.Player.prototype.handleEvent = function(e) {
 	var code = e.keyCode;
-	var mods = ["alt", "ctrl", "meta", "shift"];
-	var prevent = true;
-	for (var i=0;i<mods.length;i++) {
-		var name = mods[i] + "Key";
-		if (e[name]) { prevent = false; }
-	}
-	if (prevent) { e.preventDefault(); }
-
 
 	if (code in this._movementKeys) { 
 		this._tryMovement(this._movementKeys[code]);
@@ -163,6 +155,6 @@ Game.Player.prototype._push = function() {
 	/* FIXME direction */
 
 	this.adjustMana(-Game.Rules.PUSH_PRICE);
-	new Game.Push(this, 7);
+	new Game.Push(this, 2);
 	return true;
 }

@@ -15,7 +15,21 @@ Game.Push = function(being, direction) {
 Game.Push.DELAY = 50;
 
 Game.Push.prototype._pushBeings = function() {
-/* FIXME */
+	var max = this._cells.length-1;
+	var forceDiff = Game.Rules.PUSH_FORCE_MAX - Game.Rules.PUSH_FORCE_MIN;
+
+	for (var i=max; i>=0; i--) {
+		var force = Game.Rules.PUSH_FORCE_MAX - Math.round(forceDiff * i/max);
+
+		var row = this._cells[i];
+		for (var j=0;j<row.length;j++) {
+			var key = row[j][0]+","+row[j][1];
+			var being = Game.beings[key];
+			if (!being) { continue; }
+
+			being.push(this._start[0], this._start[1], force);
+		}
+	}
 }
 
 Game.Push.prototype._step = function() {

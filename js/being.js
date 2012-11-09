@@ -68,6 +68,25 @@ Game.Being.prototype.stun = function() {
  * @param {int} force
  */
 Game.Being.prototype.push = function(x, y, force) {
+	this.stun();
+	var startX = this._position[0];
+	var startY = this._position[1];
+	var angle = Math.atan2(startY-y, startX-x);
+
+	for (var i=1; i<=force; i++) {
+		var testx = startX + Math.round(i*Math.cos(angle));
+		var testy = startY + Math.round(i*Math.sin(angle));
+		var key = testx+","+testy;
+		if (key in Game.beings) { return; } /* stop, another being in the way */
+
+		var terrain = Game.terrain.get(testx, testy);
+		if (terrain == Game.Terrain.TYPE_LAND) { /* slide backwards */
+			Game.setBeing(testx, testy, this);
+		} else { /* damage by terrain */
+			this.adjustHP(-Game.Rules.PUSH_DAMAGE);
+			return;
+		}
+	}
 
 }
 
