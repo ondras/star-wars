@@ -6,6 +6,11 @@ Game.Mickey = function() {
 Game.Mickey.extend(Game.Being);
 
 Game.Mickey.prototype.act = function() {
+	if (this._stunned) { 
+		this._stunned = false; 
+		return;
+	}
+
 	var pos = Game.player.getPosition();
 	this._getToDistance(0, pos[0], pos[1]);
 }

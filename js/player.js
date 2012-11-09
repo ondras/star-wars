@@ -66,6 +66,14 @@ Game.Player.prototype.act = function() {
 
 Game.Player.prototype.handleEvent = function(e) {
 	var code = e.keyCode;
+	var mods = ["alt", "ctrl", "meta", "shift"];
+	var prevent = true;
+	for (var i=0;i<mods.length;i++) {
+		var name = mods[i] + "Key";
+		if (e[name]) { prevent = false; }
+	}
+	if (prevent) { e.preventDefault(); }
+
 
 	if (code in this._movementKeys) { 
 		this._tryMovement(this._movementKeys[code]);
@@ -75,8 +83,11 @@ Game.Player.prototype.handleEvent = function(e) {
 	var used = true;
 	switch (String.fromCharCode(code)) {
 		case "S":
-			if (!this._powers.lightsaber) { return false; }
-			used = this._lightsaber();
+			if (this._powers.lightsaber) { used = this._lightsaber(); }
+		break;
+
+		case "Q":
+			if (this._powers.push) { used = this._push(); }
 		break;
 		
 		default:
@@ -125,13 +136,6 @@ Game.Player.prototype._tryMovement = function(direction) {
 	Game.engine.unlock();
 }
 
-Game.Player.prototype._lightsaber = function() {
-	if (this._mana < Game.Rules.SABER_PRICE) { return false; }
-	this.adjustMana(-Game.Rules.SABER_PRICE);
-	new Game.Lightsaber(this, this._saberColor);
-	return true;
-}
-
 Game.Player.prototype._buildStatus = function() {
 	var data = [];
 
@@ -139,5 +143,26 @@ Game.Player.prototype._buildStatus = function() {
 		data.push("Lightsaber=%c{#fff}s%c{}");
 	}
 
+	if (this._powers.push) {
+		data.push("Force push=%c{#fff}q%c{}");
+	}
+
 	Game.display.setStatus(data.join("  "));
+}
+
+Game.Player.prototype._lightsaber = function() {
+	if (this._mana < Game.Rules.SABER_PRICE) { return false; }
+	this.adjustMana(-Game.Rules.SABER_PRICE);
+	new Game.Lightsaber(this, this._saberColor);
+	return true;
+}
+
+Game.Player.prototype._push = function() {
+	if (this._mana < Game.Rules.PUSH_PRICE) { return false; }
+
+	/* FIXME direction */
+
+	this.adjustMana(-Game.Rules.PUSH_PRICE);
+	new Game.Push(this, 7);
+	return true;
 }

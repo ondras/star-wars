@@ -6,6 +6,7 @@ Game.Being = function() {
 	this._mana = 0;
 	this._color = "";
 	this._char = "?";
+	this._stunned = false;
 	this._remains = ["%", "&", "~"];
 	this._remainsColor = "red";
 }
@@ -56,6 +57,20 @@ Game.Being.prototype.die = function() {
 	Game.removeBeing(this);
 }
 
+Game.Being.prototype.stun = function() {
+	this._stunned = true;
+}
+
+/**
+ * Push this being from a push point with a given force
+ * @param {int} x
+ * @param {int} y
+ * @param {int} force
+ */
+Game.Being.prototype.push = function(x, y, force) {
+
+}
+
 Game.Being.prototype._isPassable = function(x, y) {
 	var key = x+","+y;
 	if (key in Game.beings) { return false; }
@@ -64,7 +79,7 @@ Game.Being.prototype._isPassable = function(x, y) {
 	return (terrain == Game.Terrain.TYPE_LAND);
 }
 
-Game.Being.prototype._distance = function(x, y) {
+Game.Being.prototype.distance = function(x, y) {
 	return Math.max(Math.abs(x-this._position[0]), Math.abs(y-this._position[1]));
 }
 

@@ -47,7 +47,7 @@ Game.Tutorial.prototype.act = function() {
 			if (this._turnsLocal >= 5) { this._showStatsBubble(); }
 		break;
 
-		case this.constructor.PHASE_GAME:
+		case this.constructor.PHASE_GAME: /* FIXME adjust to variable (sinusoidal?) spawn chance */
 			if (ROT.RNG.getUniform() > Game.Rules.SPAWN_CHANCE) { this._spawn(); }
 		break;
 

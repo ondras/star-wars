@@ -4,17 +4,21 @@ Game.Clone = function() {
 };
 Game.Clone.extend(Game.Being);
 
-Game.Clone.FIRE_DISTANCE = 5;
 Game.Clone.FIRE_CHANCE = 0.3;
 
 /**
  * Get to a fixed distance, fire
  */
 Game.Clone.prototype.act = function() {
+	if (this._stunned) { 
+		this._stunned = false; 
+		return;
+	}
+
 	var pos = Game.player.getPosition();
-	var dist = this._distance(pos[0], pos[1]);
-	if (dist != this.constructor.FIRE_DISTANCE) { 
-		this._getToDistance(this.constructor.FIRE_DISTANCE, pos[0], pos[1]);
+	var dist = this.distance(pos[0], pos[1]);
+	if (dist != Game.Rules.BLASTER_RANGE) { 
+		this._getToDistance(Game.Rules.BLASTER_RANGE, pos[0], pos[1]);
 		return;
 	}
 	

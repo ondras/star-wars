@@ -5,7 +5,7 @@ Game.Blaster = function(being, x, y) {
 	this._trajectory = [];
 	this._char = "";
 	this._current = null;
-	
+
 	Game.engine.lock();
 	
 	var pos = being.getPosition();
@@ -20,9 +20,7 @@ Game.Blaster.DECAL_DELAY = 1000;
 Game.Blaster.prototype._compute = function(sx, sy, tx, ty) {
 	var dx = tx-sx;
 	var dy = ty-sy;
-	var angle = Math.atan2(dy, dx);
-	angle = (angle - Math.PI/8).mod(Math.PI) * 4 / Math.PI;
-	this._char = ["\\", "|", "/", "−"][Math.floor(angle) % 4];
+	this._char = Game.directionToChar(dx, dy, ["\\", "|", "/", "−"]);
 	
 	if (Math.abs(dx) > Math.abs(dy)) {
 		var len = Math.abs(dx);
@@ -61,6 +59,19 @@ Game.Blaster.prototype._step = function() {
 	var key = (this._current[0]) + "," + (this._current[1]);
 	var being = Game.beings[key];
 	if (being) {
+
+		/* deflect? */
+		if (being instanceof Game.Player) {
+			if (ROT.RNG.getUniform() > Game.Rules.BLASTER_DEFLECT_CHANCE) { /* deflect successful! */
+				var target = Game.getBeingsInDistance(this._current[0], this._current[1], Game.Rules.BLASTER_RANGE).random();
+				var pos = target.getPosition();
+				new Game.Blaster(being, pos[0], pos[1]);
+				Game.engine.unlock();
+				return;
+			}
+		}
+
+		/* not deflected, damage */
 		being.adjustHP(-Game.Rules.BLASTER_DAMAGE);
 		ch = "*";
 	} else {

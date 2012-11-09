@@ -6,16 +6,20 @@ Game.Robot = function() {
 };
 Game.Robot.extend(Game.Being);
 
-Game.Robot.FIRE_DISTANCE = 5;
 Game.Robot.FIRE_CHANCE = 0.3;
 
 /**
  * Get within a fixed distance, fire
  */
 Game.Robot.prototype.act = function() {
+	if (this._stunned) { 
+		this._stunned = false; 
+		return;
+	}
+
 	var pos = Game.player.getPosition();
-	var dist = this._distance(pos[0], pos[1]);
-	if (dist > this.constructor.FIRE_DISTANCE) { 
+	var dist = this.distance(pos[0], pos[1]);
+	if (dist > Game.Rules.BLASTER_RANGE) { 
 		this._getToDistance(0, pos[0], pos[1]);
 		return;
 	}

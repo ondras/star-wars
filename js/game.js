@@ -21,10 +21,71 @@ var Game = {
 		while (t) {
 			if (t.className == "jedi" || t.className == "sith") { 
 				this._init(t.className); 
-				break
+				break;
 			}
 			t = t.parentNode;
 		}
+	},
+
+	getBeingsInDistance: function(x, y, dist) {
+		var result = [];
+		for (var key in this.beings) {
+			var b = this.beings[key];
+			if (b.distance(x, y) <= dist) { result.push(b); }
+		}
+		return result;
+	},
+
+	generateCellArc: function(x, y, direction) {
+		var result = [];
+
+		var arcLength = 8; /* this many iterations */
+		var previousDirections = [ /* directions to previous cells */
+			(direction+3).mod(8),
+			(direction+4).mod(8),
+			(direction+5).mod(8),
+		];
+
+		/* directions converted to delta arrays */
+		var dir = ROT.DIRS[8][direction];
+		var previousDirs = [];
+		for (var i=0;i<previousDirections.length;i++) {
+			previousDirs.push(ROT.DIRS[8][previousDirections[i]]);
+		}
+
+		var rowLength;
+		var startDiff = ROT.DIRS[8][(direction - 1).mod(8)];
+		var diff = ROT.DIRS[8][(direction + 2).mod(8)];
+		var start = [0, 0];
+
+		/* main computation */
+		for (var i=0;i<arcLength;i++) {
+			var cellRow = [];
+
+			if (direction % 2) {
+				rowLength = i+2;
+				start[0] = x + (i+1)*startDiff[0];
+				start[1] = y + (i+1)*startDiff[1];
+			} else {
+				rowLength = 2*i+1;
+				start[0] = x + dir[0] + i*startDiff[0];
+				start[1] = y + dir[1] + i*startDiff[1];
+			}
+
+			for (var j=0;j<rowLength;j++) { /* for every cell in row */
+				cellRow.push([start[0]+j*diff[0], start[1]+j*diff[1]]);
+			}
+
+			result.push(cellRow);
+		} /* for all rows */
+
+		return result;
+	},
+
+	directionToChar: function(dx, dy, chars) {
+		var angle = Math.atan2(dy, dx);
+		angle = (angle - Math.PI/8).mod(Math.PI) * 4 / Math.PI;
+		return chars[Math.floor(angle) % 4];
 	},
 
 	_init: function(color, saber) {
@@ -43,10 +104,12 @@ var Game = {
 		document.body.appendChild(this.display.getContainer());
 
 		this.spawnBeing(this.player, 0, 0);
+		this.spawnBeing(new Game.Mickey(), 2, 0);
+		this.spawnBeing(new Game.Robot(), 4, -3);
 
 		setTimeout(function() { document.body.className = ""; }, 1); /* hack to start transition */
 
-		this.player.adjustPowers({lightsaber:true});
+		this.player.adjustPowers({lightsaber:true, push:true});
 		Game.engine.start();
 	},
 
