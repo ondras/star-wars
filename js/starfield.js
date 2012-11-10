@@ -29,5 +29,4 @@ Game.Starfield = {
 	stop: function() {
 		document.body.style.backgroundImage = "";
 	}
-
 }
