@@ -69,7 +69,9 @@ Game.Player.prototype.handleEvent = function(e) {
 	var code = e.keyCode;
 	
 	if (this._pendingDirection) {
-		var dir = this._movementKeys[code] || -1;
+		var dir = -1;
+		if (code in this._movementKeys) { dir = this._movementKeys[code]; }
+
 		if (dir != -1) {
 			window.removeEventListener("keydown", this); 
 			this._pendingDirection(dir);
@@ -96,6 +98,10 @@ Game.Player.prototype.handleEvent = function(e) {
 			if (this._powers.push) { used = this._push(); }
 		break;
 		
+		case "W":
+			if (this._powers.pull) { used = this._pull(); }
+		break;
+
 		default:
 			used = false;
 		break;
@@ -153,6 +159,10 @@ Game.Player.prototype._buildStatus = function() {
 		data.push("Force push=%c{#fff}q%c{}");
 	}
 
+	if (this._powers.pull) {
+		data.push("Force pull=%c{#fff}w%c{}");
+	}
+
 	Game.display.setStatus(data.join("  "));
 }
 
@@ -171,12 +181,23 @@ Game.Player.prototype._lightsaber = function() {
 Game.Player.prototype._push = function() {
 	if (this._mana < Game.Rules.PUSH_PRICE) { return false; }
 	this._requestDirection("Force push", this._pushInDirection.bind(this));
+	return false; /* turn not done yet */
+}
 
+Game.Player.prototype._pull = function() {
+	if (this._mana < Game.Rules.PULL_PRICE) { return false; }
+	this._requestDirection("Force pull", this._pullInDirection.bind(this));
 	return false; /* turn not done yet */
 }
 
 Game.Player.prototype._pushInDirection = function(dir) {
 	this.adjustMana(-Game.Rules.PUSH_PRICE);
 	new Game.Push(this, dir);
+	Game.engine.unlock();
+}
+
+Game.Player.prototype._pullInDirection = function(dir) {
+	this.adjustMana(-Game.Rules.PULL_PRICE);
+	new Game.Pull(this, dir);
 	Game.engine.unlock();
 }

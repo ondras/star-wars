@@ -120,11 +120,10 @@ var Game = {
 
 		this.spawnBeing(this.player, 0, 0);
 		this.spawnBeing(new Game.Mickey(), 2, 0);
-		this.spawnBeing(new Game.Robot(), 4, -3);
 
 		setTimeout(function() { document.body.className = ""; }, 1); /* hack to start transition */
 
-		this.player.adjustPowers({lightsaber:true, push:true});
+		this.player.adjustPowers({lightsaber:true, push:true, pull:true});
 		Game.engine.start();
 	},
 
@@ -154,7 +153,7 @@ var Game = {
 		if (!oldPosition) { return; }
 		var oldKey = oldPosition.join(",");
 		if (this.beings[oldKey] == being) { delete this.beings[oldKey]; }
-		this.display.draw(oldPosition[0], oldPosition[1]);
+		this.display.update(oldPosition[0], oldPosition[1]);
 		this.display.updateScore();
 	},
 
