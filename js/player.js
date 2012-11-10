@@ -6,6 +6,7 @@ Game.Player = function(type) {
 	this._type = type;
 	this._color = (type == "jedi" ? "#fff" : "#888");
 	this._saberColor = (type == "jedi" ? "#33f" : "#f33");
+	this._pendingDirection = null;
 
 	this._maxHP = 13;
 	this._hp = this._maxHP;
@@ -66,6 +67,19 @@ Game.Player.prototype.act = function() {
 
 Game.Player.prototype.handleEvent = function(e) {
 	var code = e.keyCode;
+	
+	if (this._pendingDirection) {
+		var dir = this._movementKeys[code] || -1;
+		if (dir != -1) {
+			window.removeEventListener("keydown", this); 
+			this._pendingDirection(dir);
+		} else if (code != 27) {
+			return;
+		}
+		this._buildStatus();
+		this._pendingDirection = null;
+		return;
+	}
 
 	if (code in this._movementKeys) { 
 		this._tryMovement(this._movementKeys[code]);
@@ -142,6 +156,11 @@ Game.Player.prototype._buildStatus = function() {
 	Game.display.setStatus(data.join("  "));
 }
 
+Game.Player.prototype._requestDirection = function(label, callback) {
+	this._pendingDirection = callback;
+	Game.display.setStatus(label + ": pick direction (ESC to cancel)");
+}
+
 Game.Player.prototype._lightsaber = function() {
 	if (this._mana < Game.Rules.SABER_PRICE) { return false; }
 	this.adjustMana(-Game.Rules.SABER_PRICE);
@@ -151,10 +170,13 @@ Game.Player.prototype._lightsaber = function() {
 
 Game.Player.prototype._push = function() {
 	if (this._mana < Game.Rules.PUSH_PRICE) { return false; }
+	this._requestDirection("Force push", this._pushInDirection.bind(this));
 
-	/* FIXME direction */
+	return false; /* turn not done yet */
+}
 
+Game.Player.prototype._pushInDirection = function(dir) {
 	this.adjustMana(-Game.Rules.PUSH_PRICE);
-	new Game.Push(this, 2);
-	return true;
+	new Game.Push(this, dir);
+	Game.engine.unlock();
 }

@@ -13,7 +13,6 @@ var Game = {
 		if (!ROT.isSupported()) { return alert("Sorry, your browser is not sexy enough to run this game :-("); }
 
 		document.addEventListener("click", this);
-		window.addEventListener("keydown", this);
 		Game.Starfield.start();
 	},
 
@@ -105,6 +104,7 @@ var Game = {
 
 	_init: function(color, saber) {
 		Game.Starfield.stop();
+		window.addEventListener("keydown", this);
 		document.removeEventListener("click", this);
 		document.body.innerHTML = "";
 
