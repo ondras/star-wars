@@ -1,22 +1,41 @@
 /**
  * Force movement
  */
-Game.Force = function(being, direction, method, order, forceMin, forceMax) {
+Game.Force = function(being, direction, length) {
 	this._start = being.getPosition();
-	this._cells = Game.generateCellArc(this._start[0], this._start[1], direction);
-	this._method = method;
-	this._order = order;
-	this._forceMin = forceMin;
-	this._forceMax = forceMax;
+	this._cells = Game.generateCellArc(this._start[0], this._start[1], direction, length);
 
+	this._order = order;
+	this._method = null;
+	this._forceMin = null;
+	this._forceMax = null;
+
+	this._promise = new Promise();
 	this._currentRowIndex = null;
 	this._chars = ["/", "−", "\\", "|"];
-
-	Game.engine.lock();
-
-	this._step();
 }
 Game.Force.DELAY = 50;
+
+Game.Force.prototype.go = function() {
+	this._step();
+	return this._promise;
+}
+
+Game.Force.prototype.offsetChars = function(amount) {
+	for (var i=0;i<amount;i++) { this._chars.push(this._chars.shift()); }
+}
+
+Game.Force.prototype.setBeingMethod = function(method, forceMin, forceMax) {
+	this._method = method;
+	this._forceMin = forceMin;
+	this._forceMax = forceMax;
+	return this;
+}
+
+Game.Force.prototype.setWaveOrder = function(order) {
+	this._order = order;
+	return this;
+}
 
 Game.Force.prototype._applyToBeings = function() {
 	var max = this._cells.length-1;
@@ -74,9 +93,9 @@ Game.Force.prototype._step = function() {
 		Game.display.setEffect(pos[0], pos[1], ch, "#aaf");
 	}
 	
-	setTimeout(this._step.bind(this), Game.Force.DELAY);
+	setTimeout(this._step.bind(this), this.constructor.DELAY);
 }
 
 Game.Force.prototype._done = function() {
-	Game.engine.unlock();
+	this._promise.fulfill();
 }

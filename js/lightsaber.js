@@ -6,13 +6,16 @@ Game.Lightsaber = function(being, color) {
 	this._dir = -1;
 	this._chars = ["|", "/", "−", "\\"];
 	this._color = color;
-
-	Game.engine.lock();
-	this._step();
+	this._promise = new Promise();
 }
 
 Game.Lightsaber.DELAY = 50;
 Game.Lightsaber.DECAL_DELAY = 1000;
+
+Game.Lightsaber.prototype.go = function() {
+	this._step();
+	return this._promise;
+}
 
 Game.Lightsaber.prototype._step = function() {
 	var pos = this._being.getPosition();
@@ -57,5 +60,5 @@ Game.Lightsaber.prototype._step = function() {
 }
 
 Game.Lightsaber.prototype._done = function() {
-	Game.engine.unlock();
+	this._promise.fulfill();
 }

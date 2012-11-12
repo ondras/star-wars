@@ -2,7 +2,7 @@ Game.Tutorial = function() {
 	this._turnsTotal = 0;
 	this._turnsLocal = 0;
 	this._kills = 0;
-	this._phase = this.constructor.PHASE_GAME*0;
+	this._phase = this.constructor.PHASE_GAME;
 }
 
 Game.Tutorial.PHASE_INTRO		= 0;

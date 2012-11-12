@@ -50,10 +50,9 @@ var Game = {
 		return result;
 	},
 
-	generateCellArc: function(x, y, direction) {
+	generateCellArc: function(x, y, direction, length) {
 		var result = [];
 
-		var arcLength = 8; /* this many iterations */
 		var previousDirections = [ /* directions to previous cells */
 			(direction+3).mod(8),
 			(direction+4).mod(8),
@@ -73,7 +72,7 @@ var Game = {
 		var start = [0, 0];
 
 		/* main computation */
-		for (var i=0;i<arcLength;i++) {
+		for (var i=0;i<length;i++) {
 			var cellRow = [];
 
 			if (direction % 2) {
@@ -123,7 +122,7 @@ var Game = {
 
 		setTimeout(function() { document.body.className = ""; }, 1); /* hack to start transition */
 
-		this.player.adjustPowers({lightsaber:true, push:true, pull:true});
+		this.player.adjustPowers({lightsaber:true, push:true, pull:true, fork:true});
 		Game.engine.start();
 	},
 
