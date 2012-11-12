@@ -2,7 +2,7 @@ Game.Tutorial = function() {
 	this._turnsTotal = 0;
 	this._turnsLocal = 0;
 	this._kills = 0;
-	this._phase = this.constructor.PHASE_GAME;
+	this._phase = this.constructor.PHASE_GAME*0;
 }
 
 Game.Tutorial.PHASE_INTRO		= 0;
@@ -67,21 +67,19 @@ Game.Tutorial.prototype.act = function() {
 Game.Tutorial.prototype._showBubbles = function(texts, anchorCallbacks, doneCallback) {
 	var bubble = new Game.Bubble(texts.shift());
 	anchorCallbacks.shift()(bubble);
-	var first = bubble;
+	var promise = bubble.show();
 
 	while (texts.length) {
 		var text = texts.shift();
 		var ac = anchorCallbacks.shift();
-		bubble = bubble.then(function(text, ac) { 
+		promise = promise.then(function(text, ac) { 
 			var newBubble = new Game.Bubble(text);
 			ac(newBubble);
-			newBubble.show();
-			return newBubble;
+			return newBubble.show();
 		}.bind(this, text, ac));
 	}
 
-	bubble.then(doneCallback);
-	first.show();
+	promise.then(doneCallback);
 }
 
 Game.Tutorial.prototype._showIntroBubbles = function() {

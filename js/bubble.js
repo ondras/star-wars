@@ -1,9 +1,8 @@
 Game.Bubble = function(text, final) {
-	Promise.call(this);
-
 	this._text = text + (final ? "" : "\n\n%c{saddlebrown}(Enter to continue)");
 	this._final = final;
 	this._cells = {};
+	this._promise = new Promise();
 	this._geom = {
 		border: 2,
 		dist: 1,
@@ -16,17 +15,14 @@ Game.Bubble = function(text, final) {
 
 	if (!final) { window.addEventListener("keydown", this); }
 }
-Game.Bubble.extend(Promise);
 
 Game.Bubble.prototype.handleEvent  = function(e) {
-	if (e.keyCode == 13) { this.fulfill(); }
-}
-
-Game.Bubble.prototype.fulfill = function() {
+	if (e.keyCode != 13) { return }
 	window.removeEventListener("keydown", this);
 	Game.display.showBubble(null);
 	Game.display.setCenter();
-	Promise.prototype.fulfill.call(this); 
+
+	this._promise.fulfill();
 }
 
 Game.Bubble.prototype.getCells = function() {
@@ -74,7 +70,7 @@ Game.Bubble.prototype.show = function() {
 	Game.display.drawText(this._geom.left+this._geom.border, this._geom.top+this._geom.border, this._text, this._geom.textWidth);
 	Game.display.showBubble(this);
 
-	return this;
+	return this._promise;
 }
 
 Game.Bubble.prototype._compute = function(x, y) {
