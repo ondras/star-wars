@@ -94,6 +94,32 @@ Game.Being.prototype.push = function(force, x, y) {
 
 }
 
+/**
+ * Pull this being from a pull point with a given force
+ * @param {int} force
+ * @param {int} x
+ * @param {int} y
+ */
+Game.Being.prototype.pull = function(force, x, y) {
+	this.stun();
+	var startX = this._position[0];
+	var startY = this._position[1];
+	var angle = Math.atan2(startY-y, startX-x);
+
+	for (var i=1; i<=force; i++) {
+		var testx = startX - Math.round(i*Math.cos(angle));
+		var testy = startY - Math.round(i*Math.sin(angle));
+		var key = testx+","+testy;
+		if (key in Game.beings) { return; } /* stop, another being in the way */
+
+		var terrain = Game.terrain.get(testx, testy);
+		if (terrain == Game.Terrain.TYPE_LAND) { /* slide towards the pullpoint */
+			Game.setBeing(testx, testy, this);
+		}
+	}
+
+}
+
 Game.Being.prototype._isPassable = function(x, y) {
 	var key = x+","+y;
 	if (key in Game.beings) { return false; }
