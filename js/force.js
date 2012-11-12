@@ -5,10 +5,11 @@ Game.Force = function(being, direction, length) {
 	this._start = being.getPosition();
 	this._cells = Game.generateCellArc(this._start[0], this._start[1], direction, length);
 
-	this._order = order;
+	this._order = null;
 	this._method = null;
 	this._forceMin = null;
 	this._forceMax = null;
+	this._clearEachRow = false;
 
 	this._promise = new Promise();
 	this._currentRowIndex = null;
@@ -21,8 +22,14 @@ Game.Force.prototype.go = function() {
 	return this._promise;
 }
 
+Game.Force.prototype.clearEachRow = function(mode) {
+	this._clearEachRow = mode;
+	return this;
+}
+
 Game.Force.prototype.offsetChars = function(amount) {
 	for (var i=0;i<amount;i++) { this._chars.push(this._chars.shift()); }
+	return this;
 }
 
 Game.Force.prototype.setBeingMethod = function(method, forceMin, forceMax) {
@@ -51,13 +58,13 @@ Game.Force.prototype._applyToBeings = function() {
 			var being = Game.beings[key];
 			if (!being) { continue; }
 
-			being[this._method](this._start[0], this._start[1], force);
+			being[this._method](force, this._start[0], this._start[1]);
 		}
 	}
 }
 
 Game.Force.prototype._step = function() {
-	if (this._currentRowIndex !== null) { /* remove previous */
+	if (this._clearEachRow && this._currentRowIndex !== null) { /* remove previous */
 		var currentRow = this._cells[this._currentRowIndex];
 		for (var i=0;i<currentRow.length;i++) {
 			var pos = currentRow[i];
@@ -97,5 +104,13 @@ Game.Force.prototype._step = function() {
 }
 
 Game.Force.prototype._done = function() {
+	if (!this._clearEachRow) {
+		for (var i=0;i<this._cells.length;i++) {
+			var row = this._cells[i];
+			for (var j=0;j<row.length;j++) {
+				Game.display.removeEffect(row[j][0], row[j][1]);
+			}
+		}
+	}
 	this._promise.fulfill();
 }

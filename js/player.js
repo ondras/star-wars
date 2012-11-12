@@ -182,7 +182,7 @@ Game.Player.prototype._lightsaber = function() {
 	if (this._mana < Game.Rules.SABER_PRICE) { return false; }
 	this.adjustMana(-Game.Rules.SABER_PRICE);
 
-	new Game.Lightsaber(this, this._saberColor).go().then(function({
+	new Game.Lightsaber(this, this._saberColor).go().then(function() {
 		Game.engine.unlock();
 	});
 	return true; /* no more listening */
@@ -208,21 +208,21 @@ Game.Player.prototype._fork = function() {
 
 Game.Player.prototype._pushInDirection = function(dir) {
 	this.adjustMana(-Game.Rules.PUSH_PRICE);
-	new Game.Push(this, dir).go().then(function({
+	new Game.Push(this, dir).go().then(function() {
 		Game.engine.unlock();
-	}));
+	});
 }
 
 Game.Player.prototype._pullInDirection = function(dir) {
 	this.adjustMana(-Game.Rules.PULL_PRICE);
-	new Game.Pull(this, dir).go().then(function({
+	new Game.Pull(this, dir).go().then(function() {
 		Game.engine.unlock();
-	}));
+	});
 }
 
 Game.Player.prototype._forkInDirection = function(dir) {
 	this.adjustMana(-Game.Rules.FORK_PRICE);
-	new Game.Fork(this, dir).go().then(function({
+	new Game.Fork(this, dir).go().then(function() {
 		Game.engine.unlock();
-	}));
+	});
 }

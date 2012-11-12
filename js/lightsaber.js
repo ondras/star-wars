@@ -40,7 +40,7 @@ Game.Lightsaber.prototype._step = function() {
 	var being = Game.beings[key];
 
 	if (being) {
-		being.adjustHP(-Game.Rules.SABER_DAMAGE);
+		being.damage(Game.Rules.SABER_DAMAGE);
 	} else {
 		var terrain = Game.terrain.get(x, y)
 		switch (terrain) {

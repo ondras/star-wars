@@ -41,6 +41,10 @@ Game.Being.prototype.getPosition = function() {
 Game.Being.prototype.act = function() {
 }
 
+Game.Being.prototype.damage = function(amount) {
+	this.adjustHP(-amount);
+}
+
 Game.Being.prototype.adjustHP = function(diff) {
 	this._hp = Math.max(0, this._hp + diff);
 	if (!this._hp) { this.die(); }
@@ -63,11 +67,11 @@ Game.Being.prototype.stun = function() {
 
 /**
  * Push this being from a push point with a given force
+ * @param {int} force
  * @param {int} x
  * @param {int} y
- * @param {int} force
  */
-Game.Being.prototype.push = function(x, y, force) {
+Game.Being.prototype.push = function(force, x, y) {
 	this.stun();
 	var startX = this._position[0];
 	var startY = this._position[1];
@@ -83,7 +87,7 @@ Game.Being.prototype.push = function(x, y, force) {
 		if (terrain == Game.Terrain.TYPE_LAND) { /* slide backwards */
 			Game.setBeing(testx, testy, this);
 		} else { /* damage by terrain */
-			this.adjustHP(-Game.Rules.PUSH_DAMAGE);
+			this.damage(Game.Rules.PUSH_DAMAGE);
 			return;
 		}
 	}

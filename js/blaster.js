@@ -72,7 +72,7 @@ Game.Blaster.prototype._step = function() {
 		}
 
 		/* not deflected, damage */
-		being.adjustHP(-Game.Rules.BLASTER_DAMAGE);
+		being.damage(Game.Rules.BLASTER_DAMAGE);
 		ch = "*";
 	} else {
 		var terrain = Game.terrain.get(this._current[0], this._current[1]);
