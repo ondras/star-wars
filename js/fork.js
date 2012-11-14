@@ -7,6 +7,7 @@ Game.Fork = function(being, direction) {
 	this._force.offsetChars(2);
 	this._force.setWaveOrder(1);
 	this._force.clearEachRow(false);
+	this._force.setDelay(75);
 }
 
 Game.Fork.prototype.go = function() {

@@ -2,14 +2,16 @@ Game.Tutorial = function() {
 	this._turnsTotal = 0;
 	this._turnsLocal = 0;
 	this._kills = 0;
-	this._phase = this.constructor.PHASE_GAME;
+	this._phase = this.constructor.PHASE_GAME*0;
 }
 
-Game.Tutorial.PHASE_INTRO		= 0;
-Game.Tutorial.PHASE_MOVEMENT	= 1;
-Game.Tutorial.PHASE_GAME		= 2;
-Game.Tutorial.PHASE_OUTRO		= 3;
-Game.Tutorial.PHASE_GAMEOVER	= 100;
+Game.Tutorial.PHASE_INTRO			= 0;
+Game.Tutorial.PHASE_MICKEY			= 1;
+Game.Tutorial.PHASE_ROBOT			= 2;
+Game.Tutorial.PHASE_CLONE			= 3;
+Game.Tutorial.PHASE_GAME			= 4;
+Game.Tutorial.PHASE_OUTRO			= 99;
+Game.Tutorial.PHASE_GAMEOVER		= 100;
 
 Game.Tutorial.prototype.getSpeed = function() {
 	return 100;
@@ -22,7 +24,7 @@ Game.Tutorial.prototype.getScore = function() {
 Game.Tutorial.prototype.addKill = function(being) {
 	if (being == Game.player) {
 		this._phase = this.constructor.PHASE_GAMEOVER;
-	} else {
+	} else if (this._phase != this.constructor.PHASE_GAMEOVER) {
 		this._kills++;
 		if (this._kills == Game.Rules.TARGET_KILLS) {
 			this._phase = this.constructor.PHASE_OUTRO;
@@ -43,8 +45,16 @@ Game.Tutorial.prototype.act = function() {
 			this._showIntroBubbles();
 		break;
 
-		case this.constructor.PHASE_MOVEMENT:
-			if (this._turnsLocal >= 5) { this._showStatsBubble(); }
+		case this.constructor.PHASE_MICKEY:
+			if (this._turnsLocal == 5) { this._showMickey(); }
+		break;
+
+		case this.constructor.PHASE_ROBOT:
+			if (this._turnsLocal == 2) { this._showRobot(); }
+		break;
+
+		case this.constructor.PHASE_CLONE:
+			if (this._turnsLocal == 2) { this._showClone(); }
 		break;
 
 		case this.constructor.PHASE_GAME: /* FIXME adjust to variable (sinusoidal?) spawn chance */
@@ -112,17 +122,76 @@ Game.Tutorial.prototype._showIntroBubbles = function() {
 	this._showBubbles(texts, anchorCallbacks, doneCallback.bind(this));
 }
 
-Game.Tutorial.prototype._showStatsBubble = function() {
+Game.Tutorial.prototype._showMickey = function() {
 	Game.engine.lock();
 
-	var cb = function() {
-		this._phase++;
+	var mickey = new Game.Mickey();
+	Game.spawnBeing(mickey);
+
+	var texts = [
+		"This is a Mickey Mouse. These adorable fluffy animals have only one goal - to get close to you.",
+		"This might be a suitable time to experiment with your %c{#fff}lightsaber%c{}: hit 's' to swing it around."
+	];
+
+	var anchorCallbacks = [
+		function(bubble) { bubble.anchorToBeing(mickey); },
+		function(bubble) { bubble.anchorToBeing(mickey); }
+	]
+
+	var doneCallback = function() {
+		Game.player.adjustPowers({lightsaber:true});
 		Game.engine.unlock();
 	}
 
-	var bubble = new Game.Bubble("This is your %c{" + Game.COLOR_HEALTH + "}health%c{} & %c{" + Game.COLOR_MANA + "}force%c{} meter.");
-	bubble.anchorToColumn(0).show();
-	bubble.then(cb.bind(this));
+	this._showBubbles(texts, anchorCallbacks, doneCallback.bind(this));
+}
+
+Game.Tutorial.prototype._showRobot = function() {
+	Game.engine.lock();
+
+	var robot = new Game.Robot();
+	Game.spawnBeing(robot);
+
+	var texts = [
+		"This is a Battle Droid. Watch out - they try to get close and shoot their laser blasters!",
+		"You can use %c{#fff}force push%c{} and %c{#fff}force pull%c{} to manipulate enemies"
+	];
+
+	var anchorCallbacks = [
+		function(bubble) { bubble.anchorToBeing(robot); },
+		function(bubble) { bubble.anchorToBeing(robot); }
+	]
+
+	var doneCallback = function() {
+		Game.player.adjustPowers({push:true, pull:true});
+		Game.engine.unlock();
+	}
+
+	this._showBubbles(texts, anchorCallbacks, doneCallback.bind(this));
+}
+
+Game.Tutorial.prototype._showClone = function() {
+	Game.engine.lock();
+
+	var clone = new Game.Clone();
+	Game.spawnBeing(clone);
+
+	var texts = [
+		"This is a Clone Trooper. Much smarter than droids, clones try to outsmart you by staying in a safe distance.",
+		"Unleash the power of a mighty %c{#fff}force fork%c{} to show your enemies that no distance is safe enough!"
+	];
+
+	var anchorCallbacks = [
+		function(bubble) { bubble.anchorToBeing(clone); },
+		function(bubble) { bubble.anchorToBeing(clone); }
+	]
+
+	var doneCallback = function() {
+		Game.player.adjustPowers({fork:true});
+		Game.engine.unlock();
+	}
+
+	this._showBubbles(texts, anchorCallbacks, doneCallback.bind(this));
 }
 
 Game.Tutorial.prototype._showOutroBubble = function() {

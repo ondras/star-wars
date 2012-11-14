@@ -1,6 +1,6 @@
 Game.Robot = function() {
 	Game.Being.call(this);
-	this._char = "R";
+	this._char = "D";
 	this._color = "#bb9";
 	this._remainsColor = this._color;
 };

@@ -10,16 +10,21 @@ Game.Force = function(being, direction, length) {
 	this._forceMin = null;
 	this._forceMax = null;
 	this._clearEachRow = false;
+	this._delay = 50;
 
 	this._promise = new Promise();
 	this._currentRowIndex = null;
 	this._chars = ["/", "−", "\\", "|"];
 }
-Game.Force.DELAY = 50;
 
 Game.Force.prototype.go = function() {
 	this._step();
 	return this._promise;
+}
+
+Game.Force.prototype.setDelay = function(delay) {
+	this._delay = delay;
+	return this;
 }
 
 Game.Force.prototype.clearEachRow = function(mode) {
@@ -100,7 +105,7 @@ Game.Force.prototype._step = function() {
 		Game.display.setEffect(pos[0], pos[1], ch, "#aaf");
 	}
 	
-	setTimeout(this._step.bind(this), this.constructor.DELAY);
+	setTimeout(this._step.bind(this), this._delay);
 }
 
 Game.Force.prototype._done = function() {

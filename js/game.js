@@ -118,11 +118,10 @@ var Game = {
 		document.body.appendChild(this.display.getContainer());
 
 		this.spawnBeing(this.player, 0, 0);
-		this.spawnBeing(new Game.Mickey(), 2, 0);
+//		this.spawnBeing(new Game.Mickey(), 2, 0);
 
 		setTimeout(function() { document.body.className = ""; }, 1); /* hack to start transition */
 
-		this.player.adjustPowers({lightsaber:true, push:true, pull:true, fork:true});
 		Game.engine.start();
 	},
 
