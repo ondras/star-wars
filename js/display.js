@@ -19,7 +19,7 @@ Game.Display = function(options) {
 	this._effects = {};
 	this._decals = {};
 	this._bubble = null;
-	this._status = "This is a status.";
+	this._status = "";
 
 	this._resize();
 

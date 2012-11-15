@@ -1,6 +1,7 @@
 Game.Clone = function() {
 	Game.Being.call(this);
 	this._char = "C";
+	this._hp = Game.Rules.HP_CLONE;
 };
 Game.Clone.extend(Game.Being);
 

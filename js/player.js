@@ -1,17 +1,14 @@
 Game.Player = function(type) {
-	Game.Being.call(this);
+	Game.SaberUser.call(this, type);
 	
 	this._name = "you";
 	this._char = "@";
-	this._type = type;
-	this._color = (type == "jedi" ? "#fff" : "#888");
-	this._saberColor = (type == "jedi" ? "#33f" : "#f33");
 	this._pendingDirection = null;
 
-	this._maxHP = 13;
+	this._maxHP = Game.Rules.HP_PLAYER;
 	this._hp = this._maxHP;
 
-	this._maxMana = 13;
+	this._maxMana = Game.Rules.MANA_PLAYER;
 	this._mana = this._maxMana;
 
 	this._powers = {
@@ -32,20 +29,20 @@ Game.Player = function(type) {
 	this._movementKeys[100]	= 6;
 	this._movementKeys[103]	= 7;
 	
+	this._movementKeys[12]	= -1;
 	this._movementKeys[101]	= -1;
-	this._movementKeys[110]	= -1;
 	this._movementKeys[190]	= -1;
 	
-	this._movementKeys[37] = 6;
 	this._movementKeys[38] = 0;
+	this._movementKeys[33] = 1;
 	this._movementKeys[39] = 2;
+	this._movementKeys[34] = 3;
 	this._movementKeys[40] = 4;
+	this._movementKeys[35] = 5;
+	this._movementKeys[37] = 6;
+	this._movementKeys[36] = 7;
 }
-Game.Player.extend(Game.Being);
-
-Game.Player.prototype.getType = function() {
-	return this._type;
-}
+Game.Player.extend(Game.SaberUser);
 
 Game.Player.prototype.adjustPowers = function(obj) {
 	for (var p in obj) { this._powers[p] = obj[p]; }
@@ -73,8 +70,9 @@ Game.Player.prototype.handleEvent = function(e) {
 		if (code in this._movementKeys) { dir = this._movementKeys[code]; }
 
 		if (dir != -1) {
-			window.removeEventListener("keydown", this); 
 			this._pendingDirection(dir);
+			window.removeEventListener("keydown", this); 
+			Game.engine.unlock();
 		} else if (code != 27) {
 			return;
 		}
@@ -111,19 +109,20 @@ Game.Player.prototype.handleEvent = function(e) {
 		break;
 	}
 	
-	if (used) { 
+	if (used) {
+		Game.engine.unlock();
 		window.removeEventListener("keydown", this); 
 	}
 }
 
 Game.Player.prototype.adjustHP = function(diff) {
-	Game.Being.prototype.adjustHP.call(this, diff);
+	Game.SaberUser.prototype.adjustHP.call(this, diff);
 	Game.display.updateStats();
 	return this;
 }
 
 Game.Player.prototype.adjustMana = function(diff) {
-	Game.Being.prototype.adjustMana.call(this, diff);
+	Game.SaberUser.prototype.adjustMana.call(this, diff);
 	Game.display.updateStats();
 	return this;
 }
@@ -178,16 +177,6 @@ Game.Player.prototype._requestDirection = function(label, callback) {
 	Game.display.setStatus(label + ": pick direction (ESC to cancel)");
 }
 
-Game.Player.prototype._lightsaber = function() {
-	if (this._mana < Game.Rules.SABER_PRICE) { return false; }
-	this.adjustMana(-Game.Rules.SABER_PRICE);
-
-	new Game.Lightsaber(this, this._saberColor).go().then(function() {
-		Game.engine.unlock();
-	});
-	return true; /* no more listening */
-}
-
 Game.Player.prototype._push = function() {
 	if (this._mana < Game.Rules.PUSH_PRICE) { return false; }
 	this._requestDirection("Force push", this._pushInDirection.bind(this));
@@ -208,6 +197,7 @@ Game.Player.prototype._fork = function() {
 
 Game.Player.prototype._pushInDirection = function(dir) {
 	this.adjustMana(-Game.Rules.PUSH_PRICE);
+	Game.engine.lock();
 	new Game.Push(this, dir).go().then(function() {
 		Game.engine.unlock();
 	});
@@ -215,6 +205,7 @@ Game.Player.prototype._pushInDirection = function(dir) {
 
 Game.Player.prototype._pullInDirection = function(dir) {
 	this.adjustMana(-Game.Rules.PULL_PRICE);
+	Game.engine.lock();
 	new Game.Pull(this, dir).go().then(function() {
 		Game.engine.unlock();
 	});
@@ -222,6 +213,7 @@ Game.Player.prototype._pullInDirection = function(dir) {
 
 Game.Player.prototype._forkInDirection = function(dir) {
 	this.adjustMana(-Game.Rules.FORK_PRICE);
+	Game.engine.lock();
 	new Game.Fork(this, dir).go().then(function() {
 		Game.engine.unlock();
 	});

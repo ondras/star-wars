@@ -9,7 +9,8 @@ Game.Tutorial.PHASE_INTRO			= 0;
 Game.Tutorial.PHASE_MICKEY			= 1;
 Game.Tutorial.PHASE_ROBOT			= 2;
 Game.Tutorial.PHASE_CLONE			= 3;
-Game.Tutorial.PHASE_GAME			= 4;
+Game.Tutorial.PHASE_SABERUSER		= 4;
+Game.Tutorial.PHASE_GAME			= 5;
 Game.Tutorial.PHASE_OUTRO			= 99;
 Game.Tutorial.PHASE_GAMEOVER		= 100;
 
@@ -55,6 +56,10 @@ Game.Tutorial.prototype.act = function() {
 
 		case this.constructor.PHASE_CLONE:
 			if (this._turnsLocal == 2) { this._showClone(); }
+		break;
+
+		case this.constructor.PHASE_SABERUSER:
+			if (this._turnsLocal == 2) { this._showSaberUser(); }
 		break;
 
 		case this.constructor.PHASE_GAME: /* FIXME adjust to variable (sinusoidal?) spawn chance */
@@ -130,7 +135,7 @@ Game.Tutorial.prototype._showMickey = function() {
 
 	var texts = [
 		"This is a Mickey Mouse. These adorable fluffy animals have only one goal - to get close to you.",
-		"This might be a suitable time to experiment with your %c{#fff}lightsaber%c{}: hit 's' to swing it around."
+		"This might be a suitable time to experiment with your %c{#fff}lightsaber%c{}: hit \"%c{#fff}s%c{}\" to swing it around."
 	];
 
 	var anchorCallbacks = [
@@ -194,6 +199,31 @@ Game.Tutorial.prototype._showClone = function() {
 	this._showBubbles(texts, anchorCallbacks, doneCallback.bind(this));
 }
 
+Game.Tutorial.prototype._showSaberUser = function() {
+	Game.engine.lock();
+
+	var type = (Game.player.getType() == "jedi" ? "sith" : "jedi");
+	var saberuser = new Game.SaberUser(type);
+	Game.spawnBeing(saberuser);
+
+	var name = type.charAt(0).toUpperCase() + type.substring(1);
+
+	var texts = [
+		"This is a " + name + " Warrior. Equipped with a lightsaber, this is the most dangerous enemy.",
+		"Use all your skills to complete your training!"
+	];
+
+	var anchorCallbacks = [
+		function(bubble) { bubble.anchorToBeing(saberuser); },
+		function(bubble) { bubble.anchorToBeing(saberuser); }
+	]
+
+	var doneCallback = function() {
+		Game.engine.unlock();
+	}
+
+	this._showBubbles(texts, anchorCallbacks, doneCallback.bind(this));
+}
 Game.Tutorial.prototype._showOutroBubble = function() {
 	Game.engine.lock();
 
