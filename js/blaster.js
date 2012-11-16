@@ -61,7 +61,7 @@ Game.Blaster.prototype._step = function() {
 	if (being) {
 
 		/* deflect? */
-		if (being instanceof Game.Player) {
+		if (being instanceof Game.SaberUser) {
 			if (ROT.RNG.getUniform() > Game.Rules.BLASTER_DEFLECT_CHANCE) { /* deflect successful! */
 				var target = Game.getBeingsInDistance(this._current[0], this._current[1], Game.Rules.BLASTER_RANGE).random();
 				var pos = target.getPosition();

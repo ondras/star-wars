@@ -86,7 +86,7 @@ Game.Player.prototype.handleEvent = function(e) {
 		return; 
 	}
 	
-	var used = true;
+	var used = false;
 	switch (String.fromCharCode(code)) {
 		case "S":
 			if (this._powers.lightsaber) { used = this._lightsaber(); }
@@ -103,15 +103,11 @@ Game.Player.prototype.handleEvent = function(e) {
 		case "F":
 			if (this._powers.fork) { used = this._fork(); }
 		break;
-
-		default:
-			used = false;
-		break;
 	}
 	
 	if (used) {
-		Game.engine.unlock();
 		window.removeEventListener("keydown", this); 
+		Game.engine.unlock();
 	}
 }
 

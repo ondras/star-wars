@@ -2,7 +2,7 @@ Game.Tutorial = function() {
 	this._turnsTotal = 0;
 	this._turnsLocal = 0;
 	this._kills = 0;
-	this._phase = this.constructor.PHASE_GAME*0;
+	this._phase = this.constructor.PHASE_INTRO;
 }
 
 Game.Tutorial.PHASE_INTRO			= 0;
@@ -29,7 +29,7 @@ Game.Tutorial.prototype.addKill = function(being) {
 		this._kills++;
 		if (this._kills == Game.Rules.TARGET_KILLS) {
 			this._phase = this.constructor.PHASE_OUTRO;
-		} else if (this._phase != this.constructor.PHASE_GAME) {
+		} else if (this._phase < this.constructor.PHASE_GAME) {
 			this._phase++; /* switch to next phase */
 			this._turnsLocal = 0;
 		}
@@ -63,7 +63,8 @@ Game.Tutorial.prototype.act = function() {
 		break;
 
 		case this.constructor.PHASE_GAME: /* FIXME adjust to variable (sinusoidal?) spawn chance */
-			if (ROT.RNG.getUniform() > Game.Rules.SPAWN_CHANCE) { this._spawn(); }
+			var spawnChance = 0.3 + Math.abs(Math.sin(this._turnsTotal * Game.Rules.SPAWN_TURN_MULTIPLER));
+			if (ROT.RNG.getUniform() > spawnChance) { this._spawn(); }
 		break;
 
 		case this.constructor.PHASE_OUTRO:
@@ -234,7 +235,7 @@ Game.Tutorial.prototype._showOutroBubble = function() {
 Game.Tutorial.prototype._showGameoverBubble = function() {
 	Game.engine.lock();
 
-	var bubble = new Game.Bubble("You are dead.\n\nGame over!", true);
+	var bubble = new Game.Bubble("You are dead (in " + (this._turnsTotal-1) + " rounds).\n\nGame over!", true);
 	bubble.anchorToBeing(Game.player).show();
 }
 
@@ -243,12 +244,15 @@ Game.Tutorial.prototype._showGameoverBubble = function() {
  */
 Game.Tutorial.prototype._spawn = function() {
 	var def = {};
-	def["Mickey"] = 4;
-	def["Robot"] = 3;
+	def["Mickey"] = 3;
+	def["Robot"] = 2;
 	def["Clone"] = 2;
+	def["SaberUser"] = 1;
 
 	var name = this._pickRandom(def);
-	var being = new Game[name]();
+	var arg = null;
+	if (name == "SaberUser") { arg = (Game.player.getType() == "jedi" ? "sith" : "jedi"); }
+	var being = new Game[name](arg);
 	Game.spawnBeing(being);
 }
 

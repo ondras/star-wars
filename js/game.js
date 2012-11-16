@@ -45,7 +45,8 @@ var Game = {
 		var result = [];
 		for (var key in this.beings) {
 			var b = this.beings[key];
-			if (b.distance(x, y) <= dist) { result.push(b); }
+			var d = b.distance(x, y);
+			if (d > 0 && d <= dist) { result.push(b); }
 		}
 		return result;
 	},

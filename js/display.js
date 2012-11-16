@@ -161,7 +161,20 @@ Game.Display.prototype._tick = function() {
 		if (now > decal[2]) {
 			delete this._decals[key];
 			var parts = key.split(",");
-			this.update(parseInt(parts[0]), parseInt(parts[1]));
+			var x = parseInt(parts[0]);
+			var y = parseInt(parts[1]);
+
+			/* x a y jsou absolutni souradnice herniho sveta */
+			var shouldUpdate = true;
+
+			if (this._bubble) { 
+				var relX = x-this._offset[0];
+				var relY = y-this._offset[1];
+				/* pokud je to v bubline, pak neupdatujeme */
+				if (relX+","+relY in this._bubble.getCells()) { shouldUpdate = false; }
+			}
+
+			if (shouldUpdate) { this.update(x, y); }
 		}
 	}
 
