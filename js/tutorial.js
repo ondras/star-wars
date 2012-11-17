@@ -104,7 +104,7 @@ Game.Tutorial.prototype._showIntroBubbles = function() {
 	name = name.charAt(0).toUpperCase() + name.substring(1);
 
 	var texts = [
-		"This is you, a mighty " + name + ". Move around using arrow keys or numpad.",
+		"This is you, a mighty " + name + ".",
 		"This is your %c{" + Game.COLOR_HEALTH + "}health%c{} & %c{" + Game.COLOR_MANA + "}force%c{} meter. Both health and force slowly regenerate.",
 		"This is your score bar. " + Game.Rules.TARGET_KILLS + " kills are necessary to finish your training.",
 		"Move around by using arrow keys or numpad. Try it now!",
