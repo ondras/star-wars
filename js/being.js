@@ -6,6 +6,7 @@ Game.Being = function() {
 	this._mana = 0;
 	this._color = "";
 	this._char = "?";
+	this._deathSound = "death";
 	this._stunned = false;
 	this._remains = ["%", "&", "~"];
 	this._remainsColor = "red";
@@ -57,6 +58,7 @@ Game.Being.prototype.adjustMana = function(diff) {
 }
 
 Game.Being.prototype.die = function() {
+	Game.audio.play(this._deathSound);
 	this._splat();
 	Game.removeBeing(this);
 }

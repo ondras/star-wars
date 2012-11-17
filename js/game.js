@@ -8,11 +8,13 @@ var Game = {
 	engine: null,
 	tutorial: null,
 	display: null,
+	audio: null,
 
 	intro: function() {
 		if (!ROT.isSupported()) { return alert("Sorry, your browser is not sexy enough to run this game :-("); }
 
 		document.addEventListener("click", this);
+		this.audio = new Game.Audio();
 		Game.Starfield.start();
 	},
 
