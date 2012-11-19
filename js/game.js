@@ -105,6 +105,7 @@ var Game = {
 	},
 
 	_init: function(color, saber) {
+		Game.audio.play("saberon");
 		Game.Starfield.stop();
 		window.addEventListener("keydown", this);
 		document.removeEventListener("click", this);

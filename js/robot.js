@@ -3,6 +3,7 @@ Game.Robot = function() {
 	this._char = "D";
 	this._color = "#bb9";
 	this._hp = Game.Rules.HP_ROBOT;
+	this._deathSound = "robot";
 	this._remainsColor = this._color;
 };
 Game.Robot.extend(Game.Being);

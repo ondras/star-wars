@@ -106,14 +106,16 @@ Game.Tutorial.prototype._showIntroBubbles = function() {
 	var texts = [
 		"This is you, a mighty " + name + ".",
 		"This is your %c{" + Game.COLOR_HEALTH + "}health%c{} & %c{" + Game.COLOR_MANA + "}force%c{} meter. Both health and force slowly regenerate.",
+		"Using skills consumes your %c{" + Game.COLOR_MANA + "}force%c{}. Keep an eye out on your reserves!",
 		"This is your score bar. " + Game.Rules.TARGET_KILLS + " kills are necessary to finish your training.",
-		"Move around by using arrow keys or numpad. Try it now!",
+		"Move around by using arrow keys or numpad. Try it after dismissing this window!",
 	];
 
 	var lastCol = Game.display.getOptions().width-1;
 
 	var anchorCallbacks = [
 		function(bubble) { bubble.anchorToBeing(Game.player); },
+		function(bubble) { bubble.anchorToColumn(0); },
 		function(bubble) { bubble.anchorToColumn(0); },
 		function(bubble) { bubble.anchorToColumn(lastCol); },
 		function(bubble) { bubble.anchorToBeing(Game.player); }

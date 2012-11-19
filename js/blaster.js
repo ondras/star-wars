@@ -1,7 +1,9 @@
 /**
  * One shot with a laser blaster
  */
-Game.Blaster = function(being, x, y) {
+Game.Blaster = function(being, x, y, deflect) {
+	Game.audio.play(deflect ? "deflect" : "blaster");
+
 	this._trajectory = [];
 	this._char = "";
 	this._current = null;
@@ -65,7 +67,7 @@ Game.Blaster.prototype._step = function() {
 			if (ROT.RNG.getUniform() > Game.Rules.BLASTER_DEFLECT_CHANCE) { /* deflect successful! */
 				var target = Game.getBeingsInDistance(this._current[0], this._current[1], Game.Rules.BLASTER_RANGE).random();
 				var pos = target.getPosition();
-				new Game.Blaster(being, pos[0], pos[1]);
+				new Game.Blaster(being, pos[0], pos[1], true);
 				Game.engine.unlock();
 				return;
 			}

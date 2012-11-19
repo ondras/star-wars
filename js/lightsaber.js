@@ -2,6 +2,7 @@
  * One swing with a lightsaber
  */
 Game.Lightsaber = function(being, color) {
+	Game.audio.play("saber");
 	this._being = being;
 	this._dir = -1;
 	this._chars = ["|", "/", "−", "\\"];

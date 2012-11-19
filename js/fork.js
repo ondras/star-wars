@@ -2,6 +2,7 @@
  * Force fork (lightning)
  */
 Game.Fork = function(being, direction) {
+	Game.audio.play("fork");
 	this._force = new Game.Force(being, direction, 6);
 	this._force.setBeingMethod("damage", Game.Rules.FORK_DAMAGE, Game.Rules.FORK_DAMAGE);
 	this._force.offsetChars(2);

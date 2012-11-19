@@ -4,7 +4,16 @@ Game.Audio = function() {
 	this._ext = (tmp.canPlayType("audio/ogg") ? "ogg" : "mp3");
 	
 	this._effects = {
-		death:		{ count: 5 }
+		death:		{ count: 5 },
+		mickey:		{ count: 2 },
+		fork:		{ count: 1 },
+		push:		{ count: 1 },
+		pull:		{ count: 1 },
+		robot:		{ count: 1 },
+		deflect:	{ count: 3 },
+		blaster:	{ count: 4 },
+		saber:		{ count: 8 },
+		saberon:	{ count: 1 }
 	};
 
 	for (var name in this._effects) {
