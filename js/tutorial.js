@@ -68,6 +68,7 @@ Game.Tutorial.prototype.act = function() {
 		break;
 
 		case this.constructor.PHASE_OUTRO:
+			Game.audio.play("victory");
 			this._showOutroBubble();
 		break;
 

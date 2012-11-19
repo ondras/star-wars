@@ -13,7 +13,8 @@ Game.Audio = function() {
 		deflect:	{ count: 3 },
 		blaster:	{ count: 4 },
 		saber:		{ count: 8 },
-		saberon:	{ count: 1 }
+		saberon:	{ count: 1 },
+		victory:	{ count: 1 }
 	};
 
 	for (var name in this._effects) {
