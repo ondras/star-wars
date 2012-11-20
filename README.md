@@ -1,6 +1,6 @@
 # Star Wars Miniature
 
-Playable version at https://ondras.github.com/star-wars!
+Playable version at http://ondras.github.com/star-wars!
 
 ## About
 
