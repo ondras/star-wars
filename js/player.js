@@ -10,6 +10,7 @@ Game.Player = function(type) {
 
 	this._maxMana = Game.Rules.MANA_PLAYER;
 	this._mana = this._maxMana;
+	this._mana = 0;
 
 	this._powers = {
 		lightsaber: false,
@@ -174,19 +175,28 @@ Game.Player.prototype._requestDirection = function(label, callback) {
 }
 
 Game.Player.prototype._push = function() {
-	if (this._mana < Game.Rules.PUSH_PRICE) { return false; }
+	if (this._mana < Game.Rules.PUSH_PRICE) { 
+		this._blinkMana();
+		return false; 
+	}
 	this._requestDirection("Force push", this._pushInDirection.bind(this));
 	return false; /* listen for direction */
 }
 
 Game.Player.prototype._pull = function() {
-	if (this._mana < Game.Rules.PULL_PRICE) { return false; }
+	if (this._mana < Game.Rules.PULL_PRICE) { 
+		return false; 
+		this._blinkMana();
+	}
 	this._requestDirection("Force pull", this._pullInDirection.bind(this));
 	return false; /* listen for direction */
 }
 
 Game.Player.prototype._fork = function() {
-	if (this._mana < Game.Rules.FORK_PRICE) { return false; }
+	if (this._mana < Game.Rules.FORK_PRICE) { 
+		this._blinkMana();
+		return false; 
+	}
 	this._requestDirection("Force fork", this._forkInDirection.bind(this));
 	return false; /* listen for direction */
 }

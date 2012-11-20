@@ -30,7 +30,10 @@ Game.SaberUser.prototype.act = function() {
 }
 
 Game.SaberUser.prototype._lightsaber = function() {
-	if (this._mana < Game.Rules.SABER_PRICE) { return false; }
+	if (this._mana < Game.Rules.SABER_PRICE) { 
+		this._blinkMana();
+		return false; 
+	}
 	this.adjustMana(-Game.Rules.SABER_PRICE);
 
 	Game.engine.lock();
@@ -38,4 +41,24 @@ Game.SaberUser.prototype._lightsaber = function() {
 		Game.engine.unlock();
 	});
 	return true; /* no more listening */
+}
+
+Game.SaberUser.prototype._blinkMana = function() {
+	Game.audio.play("no");
+	var remain = 6;
+	var step = function() {
+		remain--;
+
+		if (remain % 2) {
+			var originalColor = Game.COLOR_MANA;
+			Game.COLOR_MANA = "#fff";
+			Game.display.updateStats();
+			Game.COLOR_MANA = originalColor;
+		} else {
+			Game.display.updateStats();
+		}
+
+		if (remain) { setTimeout(step, 150); }
+	}
+	step();
 }
