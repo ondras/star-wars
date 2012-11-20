@@ -10,7 +10,6 @@ Game.Player = function(type) {
 
 	this._maxMana = Game.Rules.MANA_PLAYER;
 	this._mana = this._maxMana;
-	this._mana = 0;
 
 	this._powers = {
 		lightsaber: false,
