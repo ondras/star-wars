@@ -25,6 +25,7 @@ Game.Audio = function() {
 			var n = name;
 			if (data.count > 1) { n += i; }
 			var a = new Audio(this._expandName(n));
+			a.volume = 0.6;
 			a.load();
 			data.audio.push(a);
 		}
