@@ -124,21 +124,24 @@ Game.Player.prototype.adjustMana = function(diff) {
 }
 
 Game.Player.prototype._tryMovement = function(direction) {
+	if (direction != -1) { /* regular movement direction */
+		var dir = ROT.DIRS[8][direction];
+		var x = this._position[0] + dir[0];
+		var y = this._position[1] + dir[1];
+
+		if (!this._isPassable(x, y)) { return; } /* occupied */
+	}
+
+	/* regen */
+	if (this._hp < this._maxHP && ROT.RNG.getUniform() > Game.Rules.HP_REGEN) { this.adjustHP(1); }
+	if (this._mana < this._maxMana && ROT.RNG.getUniform() > Game.Rules.MANA_REGEN) { this.adjustMana(1); }
+
 	if (direction == -1) { /* noop */
 		window.removeEventListener("keydown", this); 
 		Game.engine.unlock();
 		return;
 	}
 	
-	var dir = ROT.DIRS[8][direction];
-	var x = this._position[0] + dir[0];
-	var y = this._position[1] + dir[1];
-
-	if (!this._isPassable(x, y)) { return; } /* occupied */
-
-	if (this._hp < this._maxHP && ROT.RNG.getUniform() > Game.Rules.HP_REGEN) { this.adjustHP(1); }
-	if (this._mana < this._maxMana && ROT.RNG.getUniform() > Game.Rules.MANA_REGEN) { this.adjustMana(1); }
-
 	/* move */
 	Game.setBeing(x, y, this);
 
