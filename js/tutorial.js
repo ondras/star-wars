@@ -39,6 +39,12 @@ Game.Tutorial.prototype.addKill = function(being) {
 Game.Tutorial.prototype.act = function() {
 	this._turnsTotal++;
 	this._turnsLocal++;
+	
+	switch (Game.player.getCheatCode()) {
+		case "IDDQD":
+			this._jumpToGame();
+		break;
+	}
 
 	switch (this._phase) {
 		case this.constructor.PHASE_INTRO:
@@ -228,6 +234,17 @@ Game.Tutorial.prototype._showSaberUser = function() {
 
 	this._showBubbles(texts, anchorCallbacks, doneCallback.bind(this));
 }
+
+Game.Tutorial.prototype._jumpToGame = function() {
+	Game.player.adjustPowers({
+		lightsaber: true,
+		push: true,
+		pull: true,
+		fork: true
+	});
+	this._phase = this.constructor.PHASE_GAME;
+}
+
 Game.Tutorial.prototype._showOutroBubble = function() {
 	Game.engine.lock();
 
