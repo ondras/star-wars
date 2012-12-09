@@ -20,6 +20,17 @@ Game.Player = function(type) {
 	
 	this._movementKeys = {};
 
+	/*H(72) J(74) K(75) L(76)*/
+	/*B(66) N(78) U(85) Y(89)*/
+	this._movementKeys[75]	= 0;
+	this._movementKeys[85]	= 1;
+	this._movementKeys[76]	= 2;
+	this._movementKeys[78]	= 3;
+	this._movementKeys[74]	= 4;
+	this._movementKeys[66]	= 5;
+	this._movementKeys[72]	= 6;
+	this._movementKeys[89]	= 7;
+
 	this._movementKeys[104]	= 0;
 	this._movementKeys[105]	= 1;
 	this._movementKeys[102]	= 2;
@@ -33,6 +44,7 @@ Game.Player = function(type) {
 	this._movementKeys[101]	= -1;
 	this._movementKeys[190]	= -1;
 	
+	/*NumPad Controls*/
 	this._movementKeys[38] = 0;
 	this._movementKeys[33] = 1;
 	this._movementKeys[39] = 2;
