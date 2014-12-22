@@ -48,6 +48,24 @@ table span {
 	display: block;
 	font-weight: normal;
 }
+/*Will make all the text with this class slide up when hovered over */
+.slider {
+ width:300px;
+ height:169px;
+}
+
+.slider div {
+ width:500px;
+ line-height:50px;
+ padding-top:200px;
+ -moz-transition:all 0.2s linear;
+ -webkit-transition:all 0.2s linear;
+ -o-transition:all 0.2s linear;
+}
+
+.slider div:hover {
+ padding-top:50px;
+}
 
 .jedi {
 	color: #fff;
