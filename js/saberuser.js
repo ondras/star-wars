@@ -3,11 +3,11 @@ Game.SaberUser = function(type) {
 	
 	this._type = type;
 	this._char			= (type == "jedi" ? "j" : "s");
-	this._color			= (type == "jedi" ? "#fff" : "#888");
-	this._saberColor	= (type == "jedi" ? "#33f" : "#f33");
+	this._color			= (type == "jedi" ? "white" : "red");
+	this._saberColor	= (type == "jedi" ? "blue" : "red");
 
 	this._hp = Game.Rules.HP_SABERUSER;
-	this._mana = Infinity;
+	this._mana = 150;
 }
 Game.SaberUser.extend(Game.Being);
 
@@ -51,7 +51,7 @@ Game.SaberUser.prototype._blinkMana = function() {
 
 		if (remain % 2) {
 			var originalColor = Game.COLOR_MANA;
-			Game.COLOR_MANA = "#fff";
+			Game.COLOR_MANA = "white";
 			Game.display.updateStats();
 			Game.COLOR_MANA = originalColor;
 		} else {
