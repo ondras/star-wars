@@ -53,6 +53,8 @@ Game.Player = function(type) {
 	this._movementKeys[35] = 5;
 	this._movementKeys[37] = 6;
 	this._movementKeys[36] = 7;
+	
+	this._cheatCode = "";
 }
 Game.Player.extend(Game.SaberUser);
 
@@ -98,6 +100,11 @@ Game.Player.prototype.handleEvent = function(e) {
 		return; 
 	}
 	
+	this._cheatCode += String.fromCharCode(code);
+	if (this._cheatCode.length > 5) {
+		this._cheatCode = this._cheatCode.substring(this._cheatCode.length - 5);
+	}
+	
 	var used = false;
 	switch (String.fromCharCode(code)) {
 		case "S":
@@ -133,6 +140,10 @@ Game.Player.prototype.adjustMana = function(diff) {
 	Game.SaberUser.prototype.adjustMana.call(this, diff);
 	Game.display.updateStats();
 	return this;
+}
+
+Game.Player.prototype.getCheatCode = function() {
+	return this._cheatCode;
 }
 
 Game.Player.prototype._tryMovement = function(direction) {
