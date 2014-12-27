@@ -50,17 +50,17 @@ table span {
 }
 
 .jedi {
-	color: #fff;
+	color: white;
 }
 
 .sith {
-	color: #888;
+	color: gray;
 }
 
 .jedi:hover {
-	text-shadow: 0 0 2em #33f;
+	text-shadow: 0 0 2em blue;
 }
 
 .sith:hover {
-	text-shadow: 0 0 2em #f33;
+	text-shadow: 0 0 2em red;
 }
